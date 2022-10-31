@@ -4,9 +4,9 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="Date_and_time">23.06.2022 22:26</string>
     <string name="Name_City">Lisakovsk</string>
-    <string name="Current_Temperature">20°С</string>
+    <string name="Current_Temperature">20°c</string>
     <string name="Condition">Sunny</string>
-    <string name="Max_Min_Temperature">37°С / 14°С</string>
+    <string name="Max_Min_Temperature">37°c / 14°c</string>
     <string name="Hours">Hours</string>
     <string name="Day">Day</string>
 
