@@ -15,4 +15,5 @@
     <string name="jule_21_07_22">Jule 21.07.22</string>
     <string name="sunny">Sunny</string>
     <string name="weather_image">weather_image</string>
+    <string name="empty">Empty</string>
 </resources>
