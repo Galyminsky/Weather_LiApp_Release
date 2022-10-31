@@ -2,16 +2,15 @@ package com.protonmail.jobforandroid.weather.fragments
 
 import android.Manifest
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.tabs.TabLayoutMediator
-import com.protonmail.jobforandroid.weather.R
 import com.protonmail.jobforandroid.weather.adapters.VpAdapter
 import com.protonmail.jobforandroid.weather.databinding.FragmentMainBinding
 
@@ -47,8 +46,8 @@ class MainFragment : Fragment() {
     private fun init() = with(binding) {
         val adapter = VpAdapter(activity as FragmentActivity, fList)
         vp.adapter = adapter
-        TabLayoutMediator(tabLayout, vp) {
-            tab, pos -> tab.text = tList[pos]
+        TabLayoutMediator(tabLayout, vp) { tab, pos ->
+            tab.text = tList[pos]
         }.attach()
     }
 
