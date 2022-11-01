@@ -56,15 +56,15 @@
                 android:id="@+id/tvCity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="10dp"
                 android:fontFamily="@font/artifika"
                 android:text="@string/Name_City"
                 android:textColor="@color/black"
-                android:textSize="34sp"
+                android:textSize="30sp"
                 android:textStyle="normal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvData" />
+                app:layout_constraintEnd_toEndOf="@+id/tvCountry"
+                app:layout_constraintStart_toStartOf="@+id/tvCountry"
+                app:layout_constraintTop_toBottomOf="@+id/tvCountry" />
 
             <TextView
                 android:id="@+id/tvCurrentTemp"
@@ -146,6 +146,19 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/ibSearch" />
+
+            <TextView
+                android:id="@+id/tvCountry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:fontFamily="@font/artifika"
+                android:text="@string/tvCountry"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvData" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
