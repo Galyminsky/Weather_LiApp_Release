@@ -52,7 +52,7 @@ class MainFragment : Fragment() {
         checkPermission()
         init()
         updateCurrentCard()
-        requestWeatherData("Las Vegas")
+        requestWeatherData("Berlin")
 
     }
 
@@ -162,18 +162,6 @@ class MainFragment : Fragment() {
         )
         model.liveDataCurrent.value = item
 
-        Log.d("MyLog", "Country: ${item.country}")
-        Log.d("MyLog", "City: ${item.city}")
-        Log.d("MyLog", "Time: ${item.time}")
-        Log.d("MyLog", "Condition: ${item.condition}")
-        Log.d("MyLog", "Temp: ${item.currentTemp}")
-        Log.d("MyLog", "Url: ${item.imageUrl}")
-
-        Log.d("MyLog", "Sunrise: ${item.sunrise}")
-        Log.d("MyLog", "Sunset: ${item.sunset}")
-        Log.d("MyLog", "MaxTemp: ${item.maxTemp}")
-        Log.d("MyLog", "MinTemp: ${item.minTemp}")
-        Log.d("MyLog", "Hours: ${item.hours}")
     }
 
     companion object {
