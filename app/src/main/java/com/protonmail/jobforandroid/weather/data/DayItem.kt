@@ -11,5 +11,7 @@ data class DayItem (
     val maxTemp: String,
     val minTemp: String,
     val hours: String,
+    val sunrise: String,
+    val sunset: String,
 
         )
