@@ -2,6 +2,7 @@ package com.protonmail.jobforandroid.weather.fragments
 
 import android.Manifest
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +11,11 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import com.android.volley.Request
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.google.android.material.tabs.TabLayoutMediator
+import com.protonmail.jobforandroid.weather.API_KEY
 import com.protonmail.jobforandroid.weather.adapters.VpAdapter
 import com.protonmail.jobforandroid.weather.databinding.FragmentMainBinding
 
@@ -40,6 +45,7 @@ class MainFragment : Fragment() {
 
         checkPermission()
         init()
+        requestWeatherData("Astana")
 
     }
 
@@ -63,6 +69,28 @@ class MainFragment : Fragment() {
             permissionListener()
             pLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
+    }
+
+    private fun requestWeatherData(city: String) {
+        val url = "https://api.weatherapi.com/v1/forecast.json?key= +" +
+                API_KEY +
+                "&q=" +
+                city +
+                "&days=" +
+                "7" +
+                "&aqi=no&alerts=no"
+        val queue = Volley.newRequestQueue(context)
+        val request = StringRequest (
+            Request.Method.GET,
+            url,
+            {
+                result -> Log.d("MyLog", "Result: $result")
+            },
+            {
+                error -> Log.d("MyLog", "Error: $error")
+            }
+                )
+        queue.add(request)
     }
 
     companion object {
