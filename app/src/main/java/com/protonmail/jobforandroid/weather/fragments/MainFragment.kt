@@ -52,7 +52,7 @@ class MainFragment : Fragment() {
         checkPermission()
         init()
         updateCurrentCard()
-        requestWeatherData("Berlin")
+        requestWeatherData("Lisakovsk")
 
     }
 
@@ -143,6 +143,7 @@ class MainFragment : Fragment() {
             )
             list.add(item)
         }
+        model.liveDataList.value = list
         return list
     }
 

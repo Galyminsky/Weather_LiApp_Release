@@ -24,7 +24,7 @@
             android:fontFamily="@font/artifika"
             android:text="@string/jule_21_07_22"
             android:textColor="@color/black"
-            android:textSize="16sp"
+            android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -39,7 +39,8 @@
             android:fontFamily="@font/artifika"
             android:text="@string/sunny"
             android:textColor="@color/black"
-            android:textSize="20sp"
+            android:textSize="16sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/tvDate"
             app:layout_constraintTop_toBottomOf="@+id/tvDate" />
@@ -72,7 +73,7 @@
             android:gravity="center"
             android:text="25°С"
             android:textColor="@color/black"
-            android:textSize="32sp"
+            android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/im"
             app:layout_constraintHorizontal_bias="0.0"
