@@ -11,20 +11,24 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.activityViewModels
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.android.material.tabs.TabLayoutMediator
 import com.protonmail.jobforandroid.weather.API_KEY
+import com.protonmail.jobforandroid.weather.MainViewModel
 import com.protonmail.jobforandroid.weather.adapters.VpAdapter
 import com.protonmail.jobforandroid.weather.adapters.WeatherModel
 import com.protonmail.jobforandroid.weather.databinding.FragmentMainBinding
+import com.squareup.picasso.Picasso
 import org.json.JSONObject
 
 
 class MainFragment : Fragment() {
     private lateinit var binding: FragmentMainBinding
     private lateinit var pLauncher: ActivityResultLauncher<String>
+    private val model: MainViewModel by activityViewModels()
     private val fList = listOf(
         HoursFragment.newInstance(),
         DaysFragment.newInstance()
@@ -47,7 +51,8 @@ class MainFragment : Fragment() {
 
         checkPermission()
         init()
-        requestWeatherData("Astana")
+        updateCurrentCard()
+        requestWeatherData("Las Vegas")
 
     }
 
@@ -57,6 +62,21 @@ class MainFragment : Fragment() {
         TabLayoutMediator(tabLayout, vp) { tab, pos ->
             tab.text = tList[pos]
         }.attach()
+    }
+
+    private fun updateCurrentCard() = with (binding) {
+        model.liveDataCurrent.observe(viewLifecycleOwner) {
+            val maxMinTemp = "${it.maxTemp}°С / ${it.minTemp}°С"
+            tvData.text = it.time
+            tvCountry.text = it.country
+            tvCity.text = it.city
+            tvCurrentTemp.text = it.currentTemp
+            tvCondition.text = it.condition
+            tvSunrise.text = it.sunrise
+            tvSunset.text = it.sunset
+            tvMaxMin.text = maxMinTemp
+            Picasso.get().load("https:" + it.imageUrl).into(imWeather)
+        }
     }
 
 
@@ -140,6 +160,8 @@ class MainFragment : Fragment() {
             weatherItem.sunrise,
             weatherItem.sunset,
         )
+        model.liveDataCurrent.value = item
+
         Log.d("MyLog", "Country: ${item.country}")
         Log.d("MyLog", "City: ${item.city}")
         Log.d("MyLog", "Time: ${item.time}")
