@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Weather</string>
+    <string name="app_name">Weather_LiApp_Release</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="Date_and_time">23.06.2022 22:26</string>
