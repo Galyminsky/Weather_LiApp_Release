@@ -42,6 +42,7 @@ class MainFragment : Fragment() {
     private lateinit var pLauncher: ActivityResultLauncher<String>
     private val model: MainViewModel by activityViewModels()
 
+
     private val fList = listOf(
         HoursFragment.newInstance(),
         DaysFragment.newInstance()
@@ -125,13 +126,14 @@ class MainFragment : Fragment() {
         }
         fLocationClient
             .getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, ct.token)
-            .addOnCompleteListener { requestWeatherData("${it.result.longitude}, ${it.result.latitude}") }
+            .addOnCompleteListener { requestWeatherData(" ${it.result.latitude}, ${it.result.longitude}") }
 
     }
 
     private fun updateCurrentCard() = with(binding) {
         model.liveDataCurrent.observe(viewLifecycleOwner) {
-            val maxMinTemp = "${it.maxTemp}°С / ${it.minTemp}°С"
+            val maxMinTemp = "${it.maxTemp}°C / ${it.minTemp}°C"
+            val curTp = "${it.currentTemp}°C"
             tvData.text = it.time
             tvCountry.text = it.country
             tvCity.text = it.city
@@ -234,3 +236,4 @@ class MainFragment : Fragment() {
         fun newInstance() = MainFragment()
     }
 }
+

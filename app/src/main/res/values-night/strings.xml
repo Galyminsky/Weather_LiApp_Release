@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Weather_LiApp_Release</string>
+    <string name="app_name">Weather LiApp</string>
     <string name="Date_and_time">23.06.2022 22:26</string>
     <string name="Name_City">Lisakovsk</string>
     <string name="Current_Temperature">20°c</string>

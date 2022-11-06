@@ -1,5 +1,6 @@
 package com.protonmail.jobforandroid.weather.adapters
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,10 +11,10 @@ import com.protonmail.jobforandroid.weather.R
 import com.protonmail.jobforandroid.weather.databinding.ListItemBinding
 import com.squareup.picasso.Picasso
 
-class WeatherAdapter(val listener: Listener?) :
+class WeatherAdapter(private val listener: Listener?) :
     ListAdapter<WeatherModel, WeatherAdapter.Holder>(Comparator()) {
 
-    class Holder(view: View, val listener: Listener?) : RecyclerView.ViewHolder(view) {
+    class Holder(view: View, private val listener: Listener?) : RecyclerView.ViewHolder(view) {
 
         val binding = ListItemBinding.bind(view)
         var itemTemp: WeatherModel? = null
@@ -24,11 +25,13 @@ class WeatherAdapter(val listener: Listener?) :
             }
         }
 
+
         fun bind(item: WeatherModel) = with(binding) {
             itemTemp = item
+            val curTp = "${item.currentTemp}°C"
             tvDate.text = item.time
             tvCondition.text = item.condition
-            tvTemp.text = item.currentTemp.ifEmpty { "${item.maxTemp}°С / ${item.minTemp}°С" }
+            tvTemp.text = item.currentTemp.ifEmpty { "${item.maxTemp}°C / ${item.minTemp}°C" }
             Picasso.get().load("https:" + item.imageUrl).into(im)
         }
     }
