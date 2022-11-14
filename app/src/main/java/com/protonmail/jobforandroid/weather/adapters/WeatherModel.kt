@@ -1,6 +1,6 @@
 package com.protonmail.jobforandroid.weather.adapters
 
-data class WeatherModel (
+data class WeatherModel(
 
     val country: String,
     val city: String,
@@ -14,4 +14,4 @@ data class WeatherModel (
     val sunrise: String,
     val sunset: String,
 
-        )
+    )

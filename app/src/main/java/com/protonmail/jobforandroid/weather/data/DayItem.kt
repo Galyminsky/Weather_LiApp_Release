@@ -1,6 +1,6 @@
 package com.protonmail.jobforandroid.weather.data
 
-data class DayItem (
+data class DayItem(
 
     val country: String,
     val city: String,
@@ -14,4 +14,4 @@ data class DayItem (
     val sunrise: String,
     val sunset: String,
 
-        )
+    )

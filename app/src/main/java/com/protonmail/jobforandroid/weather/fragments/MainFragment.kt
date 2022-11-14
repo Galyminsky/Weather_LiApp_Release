@@ -137,7 +137,7 @@ class MainFragment : Fragment() {
             tvData.text = it.time
             tvCountry.text = it.country
             tvCity.text = it.city
-            tvCurrentTemp.text = it.currentTemp.ifEmpty { maxMinTemp }
+            tvCurrentTemp.text = if (it.currentTemp.isEmpty()) maxMinTemp else "${it.currentTemp}°C"
             tvCondition.text = it.condition
             tvSunrise.text = it.sunrise
             tvSunset.text = it.sunset
@@ -173,12 +173,14 @@ class MainFragment : Fragment() {
             url,
             { result ->
                 parseWeatherData(result)
+
             },
             { error ->
                 Log.d("MyLog", "Error: $error")
             }
         )
         queue.add(request)
+        Log.d("MyLog", "requestWeatherData: $request")
     }
 
     private fun parseWeatherData(result: String) {
@@ -228,7 +230,6 @@ class MainFragment : Fragment() {
             weatherItem.sunset,
         )
         model.liveDataCurrent.value = item
-
     }
 
     companion object {

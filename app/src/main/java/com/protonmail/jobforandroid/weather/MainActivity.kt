@@ -1,7 +1,7 @@
 package com.protonmail.jobforandroid.weather
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.protonmail.jobforandroid.weather.fragments.MainFragment
 
 const val API_KEY = "543cbe8f60c8411f9f6133943222710"

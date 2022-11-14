@@ -1,7 +1,6 @@
 package com.protonmail.jobforandroid.weather.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.protonmail.jobforandroid.weather.MainViewModel
-import com.protonmail.jobforandroid.weather.R
 import com.protonmail.jobforandroid.weather.adapters.WeatherAdapter
 import com.protonmail.jobforandroid.weather.adapters.WeatherModel
 import com.protonmail.jobforandroid.weather.databinding.FragmentHoursBinding

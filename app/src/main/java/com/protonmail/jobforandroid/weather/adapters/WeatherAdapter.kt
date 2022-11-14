@@ -1,6 +1,5 @@
 package com.protonmail.jobforandroid.weather.adapters
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,13 +24,14 @@ class WeatherAdapter(private val listener: Listener?) :
             }
         }
 
-
         fun bind(item: WeatherModel) = with(binding) {
             itemTemp = item
             val curTp = "${item.currentTemp}°C"
             tvDate.text = item.time
             tvCondition.text = item.condition
-            tvTemp.text = item.currentTemp.ifEmpty { "${item.maxTemp}°C / ${item.minTemp}°C" }
+            tvTemp.text =
+                if (item.currentTemp.isEmpty()) "${item.maxTemp}°С / ${item.minTemp}°С" else
+                    "${item.currentTemp}°C"
             Picasso.get().load("https:" + item.imageUrl).into(im)
         }
     }
