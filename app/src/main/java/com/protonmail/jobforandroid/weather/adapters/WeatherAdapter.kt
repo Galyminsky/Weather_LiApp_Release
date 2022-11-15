@@ -30,7 +30,7 @@ class WeatherAdapter(private val listener: Listener?) :
             tvDate.text = item.time
             tvCondition.text = item.condition
             tvTemp.text =
-                if (item.currentTemp.isEmpty()) "${item.maxTemp}°С / ${item.minTemp}°С" else
+                if (item.currentTemp.isEmpty()) "${item.maxTemp}°C / ${item.minTemp}°C" else
                     "${item.currentTemp}°C"
             Picasso.get().load("https:" + item.imageUrl).into(im)
         }
