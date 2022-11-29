@@ -7,15 +7,17 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.protonmail.jobforandroid.weather.MainViewModel
+import com.protonmail.jobforandroid.weather.model.MainViewModel
 import com.protonmail.jobforandroid.weather.adapters.WeatherAdapter
-import com.protonmail.jobforandroid.weather.adapters.WeatherModel
+import com.protonmail.jobforandroid.weather.model.WeatherModel
 import com.protonmail.jobforandroid.weather.databinding.FragmentHoursBinding
 import org.json.JSONArray
 import org.json.JSONObject
 
 class HoursFragment : Fragment() {
-    private lateinit var binding: FragmentHoursBinding
+    private  var _binding: FragmentHoursBinding? = null
+    private  val binding get() = _binding!!
+
     private lateinit var adapter: WeatherAdapter
 
     private val model: MainViewModel by activityViewModels()
@@ -24,7 +26,7 @@ class HoursFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentHoursBinding.inflate(inflater, container, false)
+        _binding = FragmentHoursBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -50,6 +52,7 @@ class HoursFragment : Fragment() {
         for (i in 0 until hoursArray.length()) {
             val item = WeatherModel(
                 wItem.country,
+                wItem.region,
                 wItem.city,
                 (hoursArray[i] as JSONObject).getString("time"),
                 (hoursArray[i] as JSONObject).getJSONObject("condition").getString("text"),
@@ -70,5 +73,10 @@ class HoursFragment : Fragment() {
 
         @JvmStatic
         fun newInstance() = HoursFragment()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

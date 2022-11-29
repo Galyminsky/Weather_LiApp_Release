@@ -7,22 +7,24 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.protonmail.jobforandroid.weather.MainViewModel
+import com.protonmail.jobforandroid.weather.model.MainViewModel
 import com.protonmail.jobforandroid.weather.adapters.WeatherAdapter
-import com.protonmail.jobforandroid.weather.adapters.WeatherModel
+import com.protonmail.jobforandroid.weather.model.WeatherModel
 import com.protonmail.jobforandroid.weather.databinding.FragmentDaysBinding
 
 
 class DaysFragment : Fragment(), WeatherAdapter.Listener {
+    private  var _binding: FragmentDaysBinding? = null
+    private  val binding get() = _binding!!
+
     private lateinit var adapter: WeatherAdapter
-    private lateinit var binding: FragmentDaysBinding
     private val model: MainViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentDaysBinding.inflate(inflater, container, false)
+        _binding = FragmentDaysBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -42,12 +44,16 @@ class DaysFragment : Fragment(), WeatherAdapter.Listener {
     }
 
     companion object {
-
         @JvmStatic
         fun newInstance() = DaysFragment()
     }
 
     override fun onClick(item: WeatherModel) {
         model.liveDataCurrent.value = item
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }
