@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.protonmail.jobforandroid.weather.R
 import com.protonmail.jobforandroid.weather.databinding.ListItemBinding
+import com.protonmail.jobforandroid.weather.model.WeatherModel
 import com.squareup.picasso.Picasso
 
 class WeatherAdapter(private val listener: Listener?) :

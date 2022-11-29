@@ -3,6 +3,7 @@ package com.protonmail.jobforandroid.weather.data
 data class DayItem(
 
     val country: String,
+    val region: String,
     val city: String,
     val time: String,
     val condition: String,

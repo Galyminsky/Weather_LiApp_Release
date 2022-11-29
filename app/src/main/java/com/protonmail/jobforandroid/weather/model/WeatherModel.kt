@@ -1,8 +1,9 @@
-package com.protonmail.jobforandroid.weather.adapters
+package com.protonmail.jobforandroid.weather.model
 
 data class WeatherModel(
 
     val country: String,
+    val region: String,
     val city: String,
     val time: String,
     val condition: String,

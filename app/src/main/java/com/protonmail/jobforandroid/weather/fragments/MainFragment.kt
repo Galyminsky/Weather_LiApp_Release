@@ -26,18 +26,20 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.material.tabs.TabLayoutMediator
-import com.protonmail.jobforandroid.weather.API_KEY
+import com.protonmail.jobforandroid.weather.BuildConfig.API_KEY
 import com.protonmail.jobforandroid.weather.DialogManager
-import com.protonmail.jobforandroid.weather.MainViewModel
 import com.protonmail.jobforandroid.weather.adapters.VpAdapter
-import com.protonmail.jobforandroid.weather.adapters.WeatherModel
 import com.protonmail.jobforandroid.weather.databinding.FragmentMainBinding
+import com.protonmail.jobforandroid.weather.model.MainViewModel
+import com.protonmail.jobforandroid.weather.model.WeatherModel
 import com.squareup.picasso.Picasso
 import org.json.JSONObject
 
 
 class MainFragment : Fragment() {
-    private lateinit var binding: FragmentMainBinding
+    private var _binding: FragmentMainBinding? = null
+    private val binding get() = _binding!!
+
     private lateinit var fLocationClient: FusedLocationProviderClient
     private lateinit var pLauncher: ActivityResultLauncher<String>
     private val model: MainViewModel by activityViewModels()
@@ -56,7 +58,7 @@ class MainFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentMainBinding.inflate(inflater, container, false)
+        _binding = FragmentMainBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -136,6 +138,7 @@ class MainFragment : Fragment() {
             val curTp = "${it.currentTemp}°C"
             tvData.text = it.time
             tvCountry.text = it.country
+            tvRegion.text = it.region
             tvCity.text = it.city
             tvCurrentTemp.text = if (it.currentTemp.isEmpty()) maxMinTemp else "${it.currentTemp}°C"
             tvCondition.text = it.condition
@@ -193,11 +196,13 @@ class MainFragment : Fragment() {
         val list = ArrayList<WeatherModel>()
         val daysArray = mainObject.getJSONObject("forecast").getJSONArray("forecastday")
         val country = mainObject.getJSONObject("location").getString("country")
+        val region = mainObject.getJSONObject("location").getString("region")
         val name = mainObject.getJSONObject("location").getString("name")
         for (i in 0 until daysArray.length()) {
             val day = daysArray[i] as JSONObject
             val item = WeatherModel(
                 country,
+                region,
                 name,
                 day.getString("date"),
                 day.getJSONObject("day").getJSONObject("condition").getString("text"),
@@ -215,9 +220,11 @@ class MainFragment : Fragment() {
         return list
     }
 
+
     private fun parseCurrentData(mainObject: JSONObject, weatherItem: WeatherModel) {
         val item = WeatherModel(
             mainObject.getJSONObject("location").getString("country"),
+            mainObject.getJSONObject("location").getString("region"),
             mainObject.getJSONObject("location").getString("name"),
             mainObject.getJSONObject("current").getString("last_updated"),
             mainObject.getJSONObject("current").getJSONObject("condition").getString("text"),
@@ -235,6 +242,11 @@ class MainFragment : Fragment() {
     companion object {
         @JvmStatic
         fun newInstance() = MainFragment()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }
 

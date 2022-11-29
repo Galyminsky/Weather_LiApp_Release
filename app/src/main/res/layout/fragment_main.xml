@@ -54,6 +54,19 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
+                    android:id="@+id/tvRegion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/artifika"
+                    android:text="Qostanay"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvCountry" />
+
+                <TextView
                     android:id="@+id/tvCity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -63,9 +76,9 @@
                     android:textColor="@color/black"
                     android:textSize="30sp"
                     android:textStyle="normal"
-                    app:layout_constraintEnd_toEndOf="@+id/tvCountry"
-                    app:layout_constraintStart_toStartOf="@+id/tvCountry"
-                    app:layout_constraintTop_toBottomOf="@+id/tvCountry" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvRegion" />
 
                 <TextView
                     android:id="@+id/tvCurrentTemp"
