@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "604013615917",
+    "project_id": "weather-liapp",
+    "storage_bucket": "weather-liapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:604013615917:android:22defaad954a0abebf51a4",
+        "android_client_info": {
+          "package_name": "com.protonmail.jobforandroid.weather"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "604013615917-kn00pb4bsp2n2iib3tdb97moqmlljvep.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbaA1Oe8r2qZOxyIlLGaU9yueuV0h9CsA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "604013615917-kn00pb4bsp2n2iib3tdb97moqmlljvep.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
