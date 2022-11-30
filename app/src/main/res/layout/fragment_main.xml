@@ -13,7 +13,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:scaleType="centerCrop"
-            android:src="@drawable/sky_fon_6"
+            android:src="@drawable/fon_1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -95,9 +95,9 @@
 
                 <ImageView
                     android:id="@+id/imWeather"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="5dp"
                     android:src="@drawable/ic_launcher_foreground"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -107,7 +107,7 @@
                     android:id="@+id/tvCondition"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:fontFamily="@font/artifika"
                     android:text="@string/Condition"
                     android:textColor="@color/black"
@@ -134,8 +134,9 @@
                     android:id="@+id/ibSearch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="30dp"
                     android:layout_marginBottom="10dp"
                     android:background="@null"
                     android:contentDescription="@string/Search"
@@ -143,15 +144,17 @@
                     android:minHeight="48dp"
                     android:src="@drawable/ic_search_black"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/linearLayout"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+                    app:layout_constraintTop_toBottomOf="@+id/tvMaxMin" />
 
                 <ImageButton
                     android:id="@+id/ibSync"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="15dp"
-                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
                     android:layout_marginBottom="10dp"
                     android:background="@null"
                     android:contentDescription="@string/Sync"
@@ -160,8 +163,8 @@
                     android:src="@drawable/ic_sync_black"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/ibSearch"
-                    app:layout_constraintVertical_bias="0.0" />
+                    app:layout_constraintStart_toEndOf="@+id/linearLayout"
+                    app:layout_constraintTop_toBottomOf="@+id/tvMaxMin" />
 
                 <TextView
                     android:id="@+id/tvCountry"
@@ -180,15 +183,11 @@
                     android:id="@+id/linearLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="30dp"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    app:layout_constraintEnd_toStartOf="@+id/ibSync"
-                    app:layout_constraintStart_toEndOf="@+id/ibSearch"
+                    app:layout_constraintEnd_toEndOf="@+id/tvMaxMin"
+                    app:layout_constraintStart_toStartOf="@+id/tvMaxMin"
                     app:layout_constraintTop_toBottomOf="@+id/tvMaxMin">
 
                     <androidx.appcompat.widget.AppCompatImageView
