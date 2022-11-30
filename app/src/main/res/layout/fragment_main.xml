@@ -41,28 +41,28 @@
                     android:id="@+id/tvData"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="12dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
                     android:fontFamily="@font/artifika"
                     android:text="@string/Date_and_time"
                     android:textColor="@color/black"
                     android:textSize="14sp"
                     android:textStyle="normal"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/tvRegion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
                     android:fontFamily="@font/artifika"
                     android:text="Qostanay"
                     android:textColor="@color/black"
                     android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvCountry" />
 
@@ -70,7 +70,7 @@
                     android:id="@+id/tvCity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="20dp"
                     android:fontFamily="@font/artifika"
                     android:text="@string/Name_City"
                     android:textColor="@color/black"
@@ -84,7 +84,7 @@
                     android:id="@+id/tvCurrentTemp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:fontFamily="@font/artifika"
                     android:text="@string/Current_Temperature"
                     android:textColor="@color/black"
@@ -121,7 +121,7 @@
                     android:id="@+id/tvMaxMin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:fontFamily="@font/artifika"
                     android:text="@string/Max_Min_Temperature"
                     android:textColor="@color/black"
@@ -134,8 +134,8 @@
                     android:id="@+id/ibSearch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginLeft="20dp"
                     android:layout_marginTop="30dp"
                     android:layout_marginBottom="10dp"
                     android:background="@null"
@@ -144,7 +144,6 @@
                     android:minHeight="48dp"
                     android:src="@drawable/ic_search_black"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/linearLayout"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvMaxMin" />
 
@@ -153,8 +152,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="30dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginRight="20dp"
                     android:layout_marginBottom="10dp"
                     android:background="@null"
                     android:contentDescription="@string/Sync"
@@ -163,21 +162,21 @@
                     android:src="@drawable/ic_sync_black"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/linearLayout"
                     app:layout_constraintTop_toBottomOf="@+id/tvMaxMin" />
 
                 <TextView
                     android:id="@+id/tvCountry"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="15dp"
                     android:fontFamily="@font/artifika"
                     android:text="@string/tvCountry"
                     android:textColor="@color/black"
                     android:textSize="20sp"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvData" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <LinearLayout
                     android:id="@+id/linearLayout"
@@ -186,8 +185,8 @@
                     android:layout_marginTop="30dp"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    app:layout_constraintEnd_toEndOf="@+id/tvMaxMin"
-                    app:layout_constraintStart_toStartOf="@+id/tvMaxMin"
+                    app:layout_constraintEnd_toStartOf="@+id/ibSync"
+                    app:layout_constraintStart_toEndOf="@+id/ibSearch"
                     app:layout_constraintTop_toBottomOf="@+id/tvMaxMin">
 
                     <androidx.appcompat.widget.AppCompatImageView
