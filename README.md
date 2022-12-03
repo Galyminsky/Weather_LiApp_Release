@@ -1,4 +1,5 @@
-# Weather_LiApp_Release (Weather LisanderApp) ---> KOTLIN 
+# Weather LiApp Release 
+(Weather LisanderApp) ---> KOTLIN 
 
 ![playstore-icon](https://user-images.githubusercontent.com/82653197/205441936-74fcadc2-7b98-46e3-8b75-adce976ca5ba.png)
 
