@@ -9,7 +9,7 @@
 ==============================  
 
 Скачать приложение с PlayMarket ---> 
-https://play.google.com/store/apps/details?id=com.protonmail.jobforandroid.weather
+https://clck.ru/33tHNR
 
 
 
