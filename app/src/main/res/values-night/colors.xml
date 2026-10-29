@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="weather_background">#101418</color>
+    <color name="weather_surface">#1D252D</color>
+    <color name="weather_surface_elevated">#1D252D</color>
+    <color name="weather_text_primary">#E4EAF0</color>
+    <color name="weather_text_secondary">#B4C0CC</color>
+    <color name="weather_accent">#A8C7FA</color>
+    <color name="weather_on_accent">#102F50</color>
+    <color name="weather_accent_secondary">#A5D5C0</color>
+    <color name="weather_error">#FFB4AB</color>
+    <color name="weather_outline">#39434D</color>
+    <color name="weather_shadow_light">#25FFFFFF</color>
+    <color name="weather_shadow_dark">#88000000</color>
+
+    <!-- Legacy aliases retained for existing layouts and Kotlin references. -->
+    <color name="teal_700">#A5D5C0</color>
+    <color name="black">#E4EAF0</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="blue">#101418</color>
+    <color name="fon_cardView">#242D35</color>
+</resources>

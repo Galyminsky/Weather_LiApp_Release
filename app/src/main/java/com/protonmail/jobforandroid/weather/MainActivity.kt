@@ -1,5 +1,6 @@
 package com.protonmail.jobforandroid.weather
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -21,9 +22,12 @@ class MainActivity : AppCompatActivity() {
         window.isNavigationBarContrastEnforced = false
 
         binding.root.setBackgroundColor(getColor(R.color.blue))
+        val isDarkTheme =
+            (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
+                Configuration.UI_MODE_NIGHT_YES
         WindowInsetsControllerCompat(window, binding.root).apply {
-            isAppearanceLightStatusBars = false
-            isAppearanceLightNavigationBars = false
+            isAppearanceLightStatusBars = !isDarkTheme
+            isAppearanceLightNavigationBars = !isDarkTheme
         }
         val initialLeft = binding.root.paddingLeft
         val initialTop = binding.root.paddingTop

@@ -1,0 +1,115 @@
+<resources>
+    <style name="TextAppearance.Weather.Temperature" parent="TextAppearance.Material3.DisplayMedium">
+        <item name="android:fontFamily">@font/manrope_medium</item>
+        <item name="android:textFontWeight">500</item>
+        <item name="android:textSize">56sp</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="TextAppearance.Weather.City" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="android:fontFamily">@font/manrope_semibold</item>
+        <item name="android:textFontWeight">600</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="TextAppearance.Weather.Condition" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:fontFamily">@font/manrope_semibold</item>
+        <item name="android:textFontWeight">600</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="TextAppearance.Weather.Section" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:fontFamily">@font/inter_semibold</item>
+        <item name="android:textFontWeight">600</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="TextAppearance.Weather.Value" parent="TextAppearance.Material3.TitleMedium">
+        <item name="android:fontFamily">@font/inter_medium</item>
+        <item name="android:textFontWeight">500</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="TextAppearance.Weather.Body" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:fontFamily">@font/inter_regular</item>
+        <item name="android:textFontWeight">400</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+    </style>
+
+    <style name="TextAppearance.Weather.Caption" parent="TextAppearance.Material3.LabelMedium">
+        <item name="android:fontFamily">@font/inter_medium</item>
+        <item name="android:textFontWeight">500</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+    </style>
+
+    <style name="ShapeAppearance.Weather.PrimaryCard" parent="ShapeAppearance.Material3.Corner.Large">
+        <item name="cornerSize">@dimen/weather_radius_primary_card</item>
+    </style>
+
+    <style name="ShapeAppearance.Weather.Card" parent="ShapeAppearance.Material3.Corner.Medium">
+        <item name="cornerSize">@dimen/weather_radius_card</item>
+    </style>
+
+    <style name="ShapeAppearance.Weather.Control" parent="ShapeAppearance.Material3.Corner.Medium">
+        <item name="cornerSize">@dimen/weather_radius_control</item>
+    </style>
+
+    <style name="Widget.Weather.Card" parent="">
+        <item name="cardElevation">4dp</item>
+        <item name="cardBackgroundColor">?attr/colorSurfaceVariant</item>
+        <item name="strokeColor">@android:color/transparent</item>
+        <item name="strokeWidth">0dp</item>
+        <item name="android:outlineAmbientShadowColor">@color/weather_shadow_light</item>
+        <item name="android:outlineSpotShadowColor">@color/weather_shadow_dark</item>
+    </style>
+
+    <style name="Widget.Weather.Card.Primary" parent="Widget.Weather.Card">
+        <item name="cardCornerRadius">@dimen/weather_radius_primary_card</item>
+        <item name="cardBackgroundColor">?attr/colorSurface</item>
+    </style>
+
+    <style name="Widget.Weather.Card.Forecast" parent="Widget.Weather.Card">
+        <item name="cardCornerRadius">@dimen/weather_radius_card</item>
+    </style>
+
+    <style name="Widget.Weather.Button.Filled" parent="Widget.Material3.Button">
+        <item name="android:minHeight">@dimen/weather_touch_target_min</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.Weather.Control</item>
+        <item name="android:elevation">4dp</item>
+        <item name="android:outlineAmbientShadowColor">@color/weather_shadow_light</item>
+        <item name="android:outlineSpotShadowColor">@color/weather_shadow_dark</item>
+    </style>
+
+    <style name="Widget.Weather.Button.Tonal" parent="Widget.Material3.Button.TonalButton">
+        <item name="android:minHeight">@dimen/weather_touch_target_min</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.Weather.Control</item>
+        <item name="android:elevation">4dp</item>
+        <item name="android:outlineAmbientShadowColor">@color/weather_shadow_light</item>
+        <item name="android:outlineSpotShadowColor">@color/weather_shadow_dark</item>
+    </style>
+
+    <style name="Widget.Weather.TabLayout" parent="Widget.Material3.TabLayout">
+        <item name="android:fontFamily">@font/inter_semibold</item>
+    </style>
+
+    <style name="Widget.Weather.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="boxBackgroundMode">filled</item>
+        <item name="boxCornerRadiusTopStart">@dimen/weather_radius_control</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/weather_radius_control</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/weather_radius_control</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/weather_radius_control</item>
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeWidthFocused">0dp</item>
+        <item name="android:elevation">2dp</item>
+        <item name="android:outlineAmbientShadowColor">@color/weather_shadow_light</item>
+        <item name="android:outlineSpotShadowColor">@color/weather_shadow_dark</item>
+    </style>
+
+    <style name="ThemeOverlay.Weather.Dialog" parent="ThemeOverlay.Material3.MaterialAlertDialog" />
+</resources>
