@@ -16,6 +16,7 @@ import com.protonmail.jobforandroid.weather.databinding.FragmentCurrentWeatherBi
 import com.protonmail.jobforandroid.weather.model.MainViewModel
 import com.protonmail.jobforandroid.weather.model.WeatherIconState
 import com.protonmail.jobforandroid.weather.util.WeatherPresentation
+import com.protonmail.jobforandroid.weather.widgets.NeomorphicInsetDrawable
 import com.squareup.picasso.Picasso
 import java.util.Locale
 
@@ -37,6 +38,8 @@ class CurrentWeatherFragment : Fragment() {
         binding.searchCityField.setOnClickListener { (parentFragment as? MainScreenActions)?.searchCity() }
         binding.searchCityInput.setOnClickListener { (parentFragment as? MainScreenActions)?.searchCity() }
         binding.ibSync.setOnClickListener { (parentFragment as? MainScreenActions)?.refreshWeather() }
+        binding.searchCityInput.setBoxBackgroundColor(android.graphics.Color.TRANSPARENT)
+        binding.searchCityInput.background = NeomorphicInsetDrawable(requireContext())
         configureIllustrationWebView(binding.weatherIllustration)
         model.liveDataToday.observe(viewLifecycleOwner) { weather ->
             binding.tvData.text = formatUpdateTime(weather.time)

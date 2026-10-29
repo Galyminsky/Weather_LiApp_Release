@@ -24,6 +24,7 @@
     <string name="search_city_hint">Найти город…</string>
     <string name="weather_feels_like">Ощущается как %1$s°C</string>
     <string name="weather_feels_like_missing">Ощущается как —</string>
+    <string name="weather_feels_like_label">Ощущается как</string>
     <string name="weather_high_low">Макс. %1$s°C · мин. %2$s°C</string>
     <string name="weather_updated_at">Обновлено %1$s</string>
     <string name="weather_date_unknown">Сегодня</string>
@@ -71,4 +72,7 @@
     <string name="error_weather_load">Не удалось загрузить погоду. Проверьте подключение к интернету.</string>
     <string name="error_weather_parse">Не удалось прочитать данные о погоде</string>
     <string name="condition_unknown">Погодные условия неизвестны</string>
+    <string name="weather_wind_speed_label">&#1057;&#1082;&#1086;&#1088;&#1086;&#1089;&#1090;&#1100; &#1074;&#1077;&#1090;&#1088;&#1072;</string>
+    <string name="weather_today">&#1057;&#1077;&#1075;&#1086;&#1076;&#1085;&#1103;</string>
+    <string name="weather_tomorrow">&#1047;&#1072;&#1074;&#1090;&#1088;&#1072;</string>
 </resources>

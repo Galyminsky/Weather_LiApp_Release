@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="NeomorphicCardView">
+        <attr name="neomorphicInset" format="dimension" />
+        <attr name="neomorphicBlur" format="dimension" />
+        <attr name="neomorphicOffset" format="dimension" />
+    </declare-styleable>
+</resources>

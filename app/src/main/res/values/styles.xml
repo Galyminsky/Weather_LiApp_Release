@@ -61,12 +61,10 @@
     </style>
 
     <style name="Widget.Weather.Card" parent="">
-        <item name="cardElevation">4dp</item>
-        <item name="cardBackgroundColor">?attr/colorSurfaceVariant</item>
+        <item name="cardElevation">0dp</item>
+        <item name="cardBackgroundColor">@android:color/transparent</item>
         <item name="strokeColor">@android:color/transparent</item>
         <item name="strokeWidth">0dp</item>
-        <item name="android:outlineAmbientShadowColor">@color/weather_shadow_light</item>
-        <item name="android:outlineSpotShadowColor">@color/weather_shadow_dark</item>
     </style>
 
     <style name="Widget.Weather.Card.Primary" parent="Widget.Weather.Card">
@@ -76,6 +74,9 @@
 
     <style name="Widget.Weather.Card.Forecast" parent="Widget.Weather.Card">
         <item name="cardCornerRadius">@dimen/weather_radius_card</item>
+        <item name="neomorphicInset">4dp</item>
+        <item name="neomorphicBlur">3dp</item>
+        <item name="neomorphicOffset">1dp</item>
     </style>
 
     <style name="Widget.Weather.Button.Filled" parent="Widget.Material3.Button">
@@ -106,9 +107,7 @@
         <item name="boxCornerRadiusBottomEnd">@dimen/weather_radius_control</item>
         <item name="boxStrokeWidth">0dp</item>
         <item name="boxStrokeWidthFocused">0dp</item>
-        <item name="android:elevation">2dp</item>
-        <item name="android:outlineAmbientShadowColor">@color/weather_shadow_light</item>
-        <item name="android:outlineSpotShadowColor">@color/weather_shadow_dark</item>
+        <item name="android:elevation">0dp</item>
     </style>
 
     <style name="ThemeOverlay.Weather.Dialog" parent="ThemeOverlay.Material3.MaterialAlertDialog" />

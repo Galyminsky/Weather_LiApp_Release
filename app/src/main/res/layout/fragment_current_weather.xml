@@ -44,7 +44,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:hint=""
-                    app:boxBackgroundColor="@color/weather_surface_elevated"
+                    app:boxBackgroundColor="@android:color/transparent"
                     app:boxStrokeColor="@color/weather_accent"
                     app:boxStrokeWidth="0dp"
                     app:boxStrokeWidthFocused="2dp"
@@ -87,96 +87,109 @@
                     android:text="" />
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/weatherHero"
+            <!-- Большая карточка текущей погоды -->
+            <com.protonmail.jobforandroid.weather.widgets.NeomorphicCardView
+                style="@style/Widget.Weather.Card.Forecast"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/weather_space_2"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
-                <TextView
-                    android:id="@+id/tvCity"
-                    style="@style/TextAppearance.Weather.City"
+                android:layout_marginStart="-4dp"
+                android:layout_marginEnd="-4dp"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Weather.Card">
+
+                <LinearLayout
+                    android:id="@+id/weatherHero"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/weather_space_2"
-                    android:ellipsize="none"
-                    android:gravity="center"
-                    android:textSize="24sp"
-                    android:lineSpacingExtra="0dp"
-                    android:breakStrategy="high_quality"
-                    android:text=""
-                    tools:text="&#1057;&#1072;&#1085;&#1082;&#1090;-&#1055;&#1077;&#1090;&#1077;&#1088;&#1073;&#1091;&#1088;&#1075;" />
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:padding="24dp">
 
-                <FrameLayout
-                    android:id="@+id/weatherIllustrationFrame"
-                    android:layout_width="match_parent"
-                    android:layout_height="260dp"
-                    android:layout_marginTop="@dimen/weather_space_1"
-                    android:background="@android:color/transparent"
-                    android:contentDescription="@string/weather_image"
-                    android:clipChildren="true"
-                    android:clipToPadding="true">
-
-                    <WebView
-                        android:id="@+id/weatherIllustration"
+                    <TextView
+                        android:id="@+id/tvCity"
+                        style="@style/TextAppearance.Weather.City"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@android:color/transparent"
-                        android:overScrollMode="never"
-                        android:scrollbars="none" />
+                        android:layout_height="wrap_content"
+                        android:ellipsize="none"
+                        android:gravity="center"
+                        android:textSize="24sp"
+                        android:lineSpacingExtra="0dp"
+                        android:breakStrategy="high_quality"
+                        android:text=""
+                        tools:text="Санкт-Петербург" />
 
-                    <ImageView
-                        android:id="@+id/imWeather"
+                    <FrameLayout
+                        android:id="@+id/weatherIllustrationFrame"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="240dp"
+                        android:layout_marginTop="@dimen/weather_space_1"
                         android:background="@android:color/transparent"
                         android:contentDescription="@string/weather_image"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/ic_weather_unknown"
-                        android:tint="?attr/colorOnSurfaceVariant"
-                        android:visibility="gone"
-                        tools:visibility="visible" />
-                </FrameLayout>
+                        android:clipChildren="true"
+                        android:clipToPadding="true">
 
-                <TextView
-                    android:id="@+id/tvCurrentTemp"
-                    style="@style/TextAppearance.Weather.Temperature"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/weather_space_1"
-                    android:autoSizeMaxTextSize="104sp"
-                    android:autoSizeMinTextSize="64sp"
-                    android:autoSizeStepGranularity="2sp"
-                    android:autoSizeTextType="uniform"
-                    android:textSize="104sp"
-                    android:gravity="center"
-                    android:includeFontPadding="false"
-                    android:maxLines="1"
-                    android:text=""
-                    tools:text="&#8722;18°C" />
+                        <WebView
+                            android:id="@+id/weatherIllustration"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@android:color/transparent"
+                            android:overScrollMode="never"
+                            android:scrollbars="none" />
 
-                <TextView
-                    android:id="@+id/tvCondition"
-                    style="@style/TextAppearance.Weather.Condition"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/weather_space_1"
-                    android:gravity="center"
-                    android:textSize="20sp"
-                    android:lineSpacingExtra="0dp"
-                    android:ellipsize="none"
-                    android:breakStrategy="high_quality"
-                    android:text=""
-                    tools:text="&#1053;&#1077;&#1073;&#1086;&#1083;&#1100;&#1096;&#1086;&#1081; &#1083;&#1077;&#1076;&#1103;&#1085;&#1086;&#1081; &#1076;&#1086;&#1078;&#1076;&#1100;" />
-            </LinearLayout>
+                        <ImageView
+                            android:id="@+id/imWeather"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@android:color/transparent"
+                            android:contentDescription="@string/weather_image"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_weather_unknown"
+                            android:tint="?attr/colorOnSurfaceVariant"
+                            android:visibility="gone"
+                            tools:visibility="visible" />
+                    </FrameLayout>
 
-            <com.google.android.material.card.MaterialCardView
+                    <TextView
+                        android:id="@+id/tvCurrentTemp"
+                        style="@style/TextAppearance.Weather.Temperature"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/weather_space_1"
+                        android:autoSizeMaxTextSize="96sp"
+                        android:autoSizeMinTextSize="56sp"
+                        android:autoSizeStepGranularity="2sp"
+                        android:autoSizeTextType="uniform"
+                        android:textSize="96sp"
+                        android:gravity="center"
+                        android:includeFontPadding="false"
+                        android:maxLines="1"
+                        android:text=""
+                        tools:text="−18°C" />
+
+                    <TextView
+                        android:id="@+id/tvCondition"
+                        style="@style/TextAppearance.Weather.Condition"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/weather_space_1"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:lineSpacingExtra="0dp"
+                        android:ellipsize="none"
+                        android:breakStrategy="high_quality"
+                        android:text=""
+                        tools:text="Небольшой ледяной дождь" />
+                </LinearLayout>
+            </com.protonmail.jobforandroid.weather.widgets.NeomorphicCardView>
+
+            <com.protonmail.jobforandroid.weather.widgets.NeomorphicCardView
                 android:id="@+id/cardTodayTemperatureDetails"
                 style="@style/Widget.Weather.Card.Forecast"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/weather_space_2"
+                android:layout_marginStart="-4dp"
+                android:layout_marginEnd="-4dp"
                 app:shapeAppearanceOverlay="@style/ShapeAppearance.Weather.Card">
 
                 <LinearLayout
@@ -184,10 +197,10 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:paddingStart="@dimen/weather_space_4"
-                    android:paddingTop="@dimen/weather_space_3"
-                    android:paddingEnd="@dimen/weather_space_4"
-                    android:paddingBottom="@dimen/weather_space_3">
+                    android:paddingStart="20dp"
+                    android:paddingTop="20dp"
+                    android:paddingEnd="20dp"
+                    android:paddingBottom="20dp">
 
                     <TextView
                         android:id="@+id/tvFeelsLike"
@@ -209,7 +222,7 @@
                         android:text=""
                         tools:text="Макс. 12°C · Мин. 2°C" />
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+            </com.protonmail.jobforandroid.weather.widgets.NeomorphicCardView>
 
             <TextView
                 android:id="@+id/tvData"
@@ -219,297 +232,349 @@
                 android:layout_marginTop="@dimen/weather_space_2"
                 android:gravity="end"
                 android:text=""
-                tools:text="&#1054;&#1073;&#1085;&#1086;&#1074;&#1083;&#1077;&#1085;&#1086; 19:00" />
+                tools:text="Обновлено 19:00" />
 
+            <!-- Сетка маленьких карточек погодных показателей -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/weather_space_3"
+                android:baselineAligned="false"
                 android:clipChildren="false"
                 android:orientation="horizontal">
 
-                <com.google.android.material.card.MaterialCardView
+                <!-- Карточка: Скорость ветра -->
+                <com.protonmail.jobforandroid.weather.widgets.NeomorphicCardView
                     android:id="@+id/cardWind"
                     style="@style/Widget.Weather.Card.Forecast"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/weather_space_2"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="@dimen/weather_space_1"
+                    android:layout_marginStart="-4dp"
                     android:layout_weight="1"
                     app:shapeAppearanceOverlay="@style/ShapeAppearance.Weather.Card">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:minHeight="148dp"
+                        android:layout_height="match_parent"
+                        android:minHeight="125dp"
+                        android:gravity="center_horizontal"
                         android:orientation="vertical"
-                        android:padding="@dimen/weather_space_4">
+                        android:padding="16dp">
 
                         <ImageView
-                            android:layout_width="44dp"
-                            android:layout_height="44dp"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
                             android:contentDescription="@null"
-                            android:tint="?attr/colorPrimary"
+                            app:tint="?attr/colorPrimary"
                             app:srcCompat="@drawable/ic_weather_wind" />
+
+                        <TextView
+                            style="@style/TextAppearance.Weather.Caption"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:ellipsize="end"
+                            android:text="@string/weather_wind"
+                            android:textColor="?attr/colorOnSurfaceVariant" />
+
                         <TextView
                             android:id="@+id/tvWindValue"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/weather_space_2"
-                            android:autoSizeMaxTextSize="24sp"
-                            android:autoSizeMinTextSize="18sp"
-                            android:autoSizeTextType="uniform"
-                        android:fontFamily="@font/inter_medium"
-                            android:maxLines="2"
+                            android:layout_marginTop="4dp"
+                            android:fontFamily="@font/inter_semibold"
+                            android:gravity="center"
                             android:textColor="?attr/colorOnSurface"
-                            android:textSize="24sp"
+                            android:textSize="20sp"
                             tools:text="18 км/ч" />
+
                         <TextView
                             android:id="@+id/tvWindDirection"
-                            style="@style/TextAppearance.Weather.Body"
-                            android:layout_width="match_parent"
+                            style="@style/TextAppearance.Weather.Caption"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:gravity="center"
                             android:maxLines="1"
                             tools:text="Северо-запад" />
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/weather_space_1"
-                            android:text="@string/weather_wind"
-                            android:textAppearance="@style/TextAppearance.Weather.Body" />
                     </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
+                </com.protonmail.jobforandroid.weather.widgets.NeomorphicCardView>
 
-                <com.google.android.material.card.MaterialCardView
+                <!-- Карточка: Влажность -->
+                <com.protonmail.jobforandroid.weather.widgets.NeomorphicCardView
                     android:id="@+id/cardHumidity"
                     style="@style/Widget.Weather.Card.Forecast"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/weather_space_2"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/weather_space_1"
+                    android:layout_marginEnd="-4dp"
                     android:layout_weight="1"
                     app:shapeAppearanceOverlay="@style/ShapeAppearance.Weather.Card">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:minHeight="148dp"
+                        android:layout_height="match_parent"
+                        android:minHeight="125dp"
+                        android:gravity="center_horizontal"
                         android:orientation="vertical"
-                        android:padding="@dimen/weather_space_4">
+                        android:padding="16dp">
 
                         <ImageView
-                            android:layout_width="44dp"
-                            android:layout_height="44dp"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
                             android:contentDescription="@null"
-                            android:tint="?attr/colorPrimary"
+                            app:tint="?attr/colorPrimary"
                             app:srcCompat="@drawable/ic_weather_humidity" />
+
+                        <TextView
+                            style="@style/TextAppearance.Weather.Caption"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:ellipsize="end"
+                            android:text="@string/weather_humidity"
+                            android:textColor="?attr/colorOnSurfaceVariant" />
+
                         <TextView
                             android:id="@+id/tvHumidityValue"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/weather_space_2"
-                            android:autoSizeMaxTextSize="24sp"
-                            android:autoSizeMinTextSize="18sp"
-                            android:autoSizeTextType="uniform"
-                        android:fontFamily="@font/inter_medium"
-                            android:maxLines="1"
+                            android:layout_marginTop="4dp"
+                            android:fontFamily="@font/inter_semibold"
+                            android:gravity="center"
                             android:textColor="?attr/colorOnSurface"
-                            android:textSize="24sp"
+                            android:textSize="22sp"
                             tools:text="68%" />
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/weather_space_1"
-                            android:text="@string/weather_humidity"
-                            android:textAppearance="@style/TextAppearance.Weather.Body" />
                     </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
+                </com.protonmail.jobforandroid.weather.widgets.NeomorphicCardView>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/weather_space_2"
+                android:baselineAligned="false"
                 android:clipChildren="false"
                 android:orientation="horizontal">
 
-                <com.google.android.material.card.MaterialCardView
+                <!-- Карточка: Вероятность осадков -->
+                <com.protonmail.jobforandroid.weather.widgets.NeomorphicCardView
                     android:id="@+id/cardPrecipitation"
                     style="@style/Widget.Weather.Card.Forecast"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/weather_space_2"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="@dimen/weather_space_1"
+                    android:layout_marginStart="-4dp"
                     android:layout_weight="1"
                     app:shapeAppearanceOverlay="@style/ShapeAppearance.Weather.Card">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:minHeight="148dp"
+                        android:layout_height="match_parent"
+                        android:minHeight="125dp"
+                        android:gravity="center_horizontal"
                         android:orientation="vertical"
-                        android:padding="@dimen/weather_space_4">
+                        android:padding="16dp">
 
                         <ImageView
-                            android:layout_width="44dp"
-                            android:layout_height="44dp"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
                             android:contentDescription="@null"
-                            android:tint="?attr/colorPrimary"
+                            app:tint="?attr/colorPrimary"
                             app:srcCompat="@drawable/ic_weather_precipitation" />
+
+                        <TextView
+                            style="@style/TextAppearance.Weather.Caption"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:ellipsize="end"
+                            android:text="@string/weather_precipitation"
+                            android:textColor="?attr/colorOnSurfaceVariant" />
+
                         <TextView
                             android:id="@+id/tvPrecipitationValue"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/weather_space_2"
-                            android:autoSizeMaxTextSize="24sp"
-                            android:autoSizeMinTextSize="18sp"
-                            android:autoSizeTextType="uniform"
-                        android:fontFamily="@font/inter_medium"
-                            android:maxLines="1"
+                            android:layout_marginTop="4dp"
+                            android:fontFamily="@font/inter_semibold"
+                            android:gravity="center"
                             android:textColor="?attr/colorOnSurface"
-                            android:textSize="24sp"
+                            android:textSize="22sp"
                             tools:text="40%" />
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/weather_space_1"
-                            android:text="@string/weather_precipitation"
-                            android:textAppearance="@style/TextAppearance.Weather.Body" />
                     </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
+                </com.protonmail.jobforandroid.weather.widgets.NeomorphicCardView>
 
-                <com.google.android.material.card.MaterialCardView
+                <!-- Карточка: Давление -->
+                <com.protonmail.jobforandroid.weather.widgets.NeomorphicCardView
                     android:id="@+id/cardPressure"
                     style="@style/Widget.Weather.Card.Forecast"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/weather_space_2"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/weather_space_1"
+                    android:layout_marginEnd="-4dp"
                     android:layout_weight="1"
                     app:shapeAppearanceOverlay="@style/ShapeAppearance.Weather.Card">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:minHeight="148dp"
+                        android:layout_height="match_parent"
+                        android:minHeight="125dp"
+                        android:gravity="center_horizontal"
                         android:orientation="vertical"
-                        android:padding="@dimen/weather_space_4">
+                        android:padding="16dp">
 
                         <ImageView
-                            android:layout_width="44dp"
-                            android:layout_height="44dp"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
                             android:contentDescription="@null"
-                            android:tint="?attr/colorPrimary"
+                            app:tint="?attr/colorPrimary"
                             app:srcCompat="@drawable/ic_weather_pressure" />
+
+                        <TextView
+                            style="@style/TextAppearance.Weather.Caption"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:ellipsize="end"
+                            android:text="@string/weather_pressure"
+                            android:textColor="?attr/colorOnSurfaceVariant" />
+
                         <TextView
                             android:id="@+id/tvPressureValue"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/weather_space_2"
-                            android:autoSizeMaxTextSize="24sp"
-                            android:autoSizeMinTextSize="18sp"
-                            android:autoSizeTextType="uniform"
-                        android:fontFamily="@font/inter_medium"
-                            android:maxLines="1"
+                            android:layout_marginTop="4dp"
+                            android:fontFamily="@font/inter_semibold"
+                            android:gravity="center"
                             android:textColor="?attr/colorOnSurface"
-                            android:textSize="24sp"
+                            android:textSize="20sp"
                             tools:text="1013 гПа" />
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/weather_space_1"
-                            android:text="@string/weather_pressure"
-                            android:textAppearance="@style/TextAppearance.Weather.Body" />
                     </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
+                </com.protonmail.jobforandroid.weather.widgets.NeomorphicCardView>
             </LinearLayout>
 
-            <com.google.android.material.card.MaterialCardView
+            <!-- Карточка восхода и заката -->
+            <com.protonmail.jobforandroid.weather.widgets.NeomorphicCardView
                 android:id="@+id/linearLayout"
                 style="@style/Widget.Weather.Card.Forecast"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/weather_space_3"
+                android:layout_marginStart="-4dp"
+                android:layout_marginEnd="-4dp"
                 app:shapeAppearanceOverlay="@style/ShapeAppearance.Weather.Card">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:baselineAligned="false"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="@dimen/weather_space_4">
+                    android:padding="16dp">
 
+                    <!-- Колонка: Восход -->
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:baselineAligned="false"
                         android:gravity="center_vertical"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:paddingEnd="8dp"
+                        android:paddingStart="0dp">
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/im_sunrise"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:layout_gravity="center_vertical"
                             android:contentDescription="@null"
-                            android:tint="?attr/colorSecondary"
+                            app:tint="?attr/colorPrimary"
                             app:srcCompat="@drawable/ic_sunrise" />
+
                         <LinearLayout
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/weather_space_2"
-                            android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="10dp"
                             android:orientation="vertical">
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:maxLines="1"
+                                android:ellipsize="end"
                                 android:text="@string/sunrise"
                                 android:textAppearance="@style/TextAppearance.Weather.Body"
                                 android:textColor="?attr/colorOnSurfaceVariant" />
                             <TextView
                                 android:id="@+id/tv_sunrise"
-                                style="@style/TextAppearance.Weather.Section"
-                                android:layout_width="match_parent"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:maxLines="2"
-                                android:text=""
+                                android:layout_marginTop="2dp"
+                                android:fontFamily="@font/inter_semibold"
+                                android:textColor="?attr/colorOnSurface"
+                                android:textSize="18sp"
                                 tools:text="06:24 AM" />
                         </LinearLayout>
                     </LinearLayout>
 
+                    <!-- Колонка: Закат -->
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:baselineAligned="false"
                         android:gravity="center_vertical"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:paddingEnd="0dp"
+                        android:paddingStart="8dp">
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/im_sunset"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:layout_gravity="center_vertical"
                             android:contentDescription="@null"
-                            android:tint="?attr/colorSecondary"
+                            app:tint="?attr/colorPrimary"
                             app:srcCompat="@drawable/ic_sunset" />
+
                         <LinearLayout
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/weather_space_2"
-                            android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="10dp"
                             android:orientation="vertical">
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:maxLines="1"
+                                android:ellipsize="end"
                                 android:text="@string/sunset"
                                 android:textAppearance="@style/TextAppearance.Weather.Body"
                                 android:textColor="?attr/colorOnSurfaceVariant" />
                             <TextView
                                 android:id="@+id/tv_sunset"
-                                style="@style/TextAppearance.Weather.Section"
-                                android:layout_width="match_parent"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:maxLines="2"
-                                android:text=""
+                                android:layout_marginTop="2dp"
+                                android:fontFamily="@font/inter_semibold"
+                                android:textColor="?attr/colorOnSurface"
+                                android:textSize="18sp"
                                 tools:text="07:42 PM" />
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+            </com.protonmail.jobforandroid.weather.widgets.NeomorphicCardView>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
