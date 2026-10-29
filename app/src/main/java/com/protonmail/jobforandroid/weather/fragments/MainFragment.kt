@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
@@ -21,6 +22,7 @@ import androidx.fragment.app.activityViewModels
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.android.volley.RequestQueue
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
@@ -34,6 +36,7 @@ import com.protonmail.jobforandroid.weather.model.MainViewModel
 import com.protonmail.jobforandroid.weather.model.WeatherModel
 import com.squareup.picasso.Picasso
 import org.json.JSONObject
+import kotlin.math.roundToInt
 
 
 class MainFragment : Fragment() {
@@ -41,6 +44,9 @@ class MainFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var fLocationClient: FusedLocationProviderClient
+    private lateinit var requestQueue: RequestQueue
+    private var weatherRequest: StringRequest? = null
+    private var locationCancellation: CancellationTokenSource? = null
     private lateinit var pLauncher: ActivityResultLauncher<String>
     private val model: MainViewModel by activityViewModels()
 
@@ -79,6 +85,7 @@ class MainFragment : Fragment() {
 
     private fun init() = with(binding) {
         fLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+        requestQueue = Volley.newRequestQueue(requireContext().applicationContext)
         val adapter = VpAdapter(activity as FragmentActivity, fList)
         vp.adapter = adapter
         TabLayoutMediator(tabLayout, vp) { tab, pos ->
@@ -98,6 +105,9 @@ class MainFragment : Fragment() {
     }
 
     private fun checkLocation() {
+        if (!isPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION) &&
+            !isPermissionGranted(Manifest.permission.ACCESS_COARSE_LOCATION)
+        ) return
         if (isLocationEnabled()) {
             getLocation()
         } else {
@@ -111,11 +121,13 @@ class MainFragment : Fragment() {
 
     private fun isLocationEnabled(): Boolean {
         val lm = activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        return lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        return lm.isLocationEnabled
     }
 
     private fun getLocation() {
+        locationCancellation?.cancel()
         val ct = CancellationTokenSource()
+        locationCancellation = ct
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -128,7 +140,17 @@ class MainFragment : Fragment() {
         }
         fLocationClient
             .getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, ct.token)
-            .addOnCompleteListener { requestWeatherData(" ${it.result.latitude}, ${it.result.longitude}") }
+            .addOnSuccessListener { location ->
+                if (location == null) {
+                    showError("Current location is unavailable")
+                } else {
+                    requestWeatherData("${location.latitude},${location.longitude}")
+                }
+            }
+            .addOnFailureListener { error ->
+                Log.e("Weather", "Unable to get current location", error)
+                showError("Unable to get current location")
+            }
 
     }
 
@@ -152,6 +174,7 @@ class MainFragment : Fragment() {
     private fun permissionListener() {
         pLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             Toast.makeText(activity, "Permission is $it", Toast.LENGTH_SHORT).show()
+            if (it) checkLocation()
         }
     }
 
@@ -163,32 +186,44 @@ class MainFragment : Fragment() {
     }
 
     private fun requestWeatherData(city: String) {
-        val url = "https://api.weatherapi.com/v1/forecast.json?key= +" +
-                API_KEY +
-                "&q=" +
-                city +
-                "&days=" +
-                "7" +
-                "&aqi=no&alerts=no"
-        val queue = Volley.newRequestQueue(context)
+        weatherRequest?.cancel()
+        val url = Uri.parse("https://api.weatherapi.com/v1/forecast.json")
+            .buildUpon()
+            .appendQueryParameter("key", API_KEY)
+            .appendQueryParameter("q", city.trim())
+            .appendQueryParameter("days", "7")
+            .appendQueryParameter("aqi", "no")
+            .appendQueryParameter("alerts", "no")
+            .build()
         val request = StringRequest(
             Request.Method.GET,
-            url,
+            url.toString(),
             { result ->
-                parseWeatherData(result)
+                try {
+                    parseWeatherData(result)
+                } catch (error: Exception) {
+                    Log.e("Weather", "Unable to parse weather response", error)
+                    showError("Weather data could not be read")
+                }
 
             },
             { error ->
-                Log.d("MyLog", "Error: $error")
+                Log.e("Weather", "Weather request failed", error)
+                showError("Unable to load weather. Check your connection and try again.")
             }
         )
-        queue.add(request)
-        Log.d("MyLog", "requestWeatherData: $request")
+        weatherRequest = request
+        requestQueue.add(request)
+    }
+
+    private fun showError(message: String) {
+        if (isAdded) Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
     private fun parseWeatherData(result: String) {
         val mainObject = JSONObject(result)
         val list = parseDays(mainObject)
+        if (list.isEmpty()) throw IllegalStateException("Forecast response contains no days")
         parseCurrentData(mainObject, list[0])
     }
 
@@ -207,8 +242,8 @@ class MainFragment : Fragment() {
                 day.getString("date"),
                 day.getJSONObject("day").getJSONObject("condition").getString("text"),
                 "",
-                day.getJSONObject("day").getString("maxtemp_c").toFloat().toInt().toString(),
-                day.getJSONObject("day").getString("mintemp_c").toFloat().toInt().toString(),
+                day.getJSONObject("day").getString("maxtemp_c").toFloat().roundToInt().toString(),
+                day.getJSONObject("day").getString("mintemp_c").toFloat().roundToInt().toString(),
                 day.getJSONObject("day").getJSONObject("condition").getString("icon"),
                 day.getJSONArray("hour").toString(),
                 day.getJSONObject("astro").getString("sunrise"),
@@ -244,9 +279,14 @@ class MainFragment : Fragment() {
         fun newInstance() = MainFragment()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        weatherRequest?.cancel()
+        weatherRequest = null
+        locationCancellation?.cancel()
+        locationCancellation = null
+        if (::requestQueue.isInitialized) requestQueue.stop()
         _binding = null
+        super.onDestroyView()
     }
 }
 
