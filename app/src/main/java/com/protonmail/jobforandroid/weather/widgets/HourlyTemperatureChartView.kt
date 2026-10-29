@@ -19,6 +19,7 @@ class HourlyTemperatureChartView @JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr) {
 
     private var points: List<ChartPoint> = emptyList()
+    private var lastHoursJson: String? = null
 
     private val linePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
@@ -55,6 +56,8 @@ class HourlyTemperatureChartView @JvmOverloads constructor(
     private val linePath = Path()
 
     fun setHoursJson(hoursJson: String?) {
+        if (hoursJson == lastHoursJson) return
+        lastHoursJson = hoursJson
         if (hoursJson.isNullOrBlank()) {
             points = emptyList()
             invalidate()

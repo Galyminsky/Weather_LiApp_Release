@@ -28,7 +28,10 @@ object DialogManager {
         val dialog = builder.create()
         dialog.setTitle(context.getString(R.string.dialog_city_name))
         dialog.setButton(AlertDialog.BUTTON_POSITIVE, context.getString(R.string.action_ok)) { _, _ ->
-            listener.onClick(edName.text.toString())
+            val query = edName.text.toString().trim()
+            if (query.isNotEmpty()) {
+                listener.onClick(query)
+            }
             dialog.dismiss()
         }
         dialog.setButton(AlertDialog.BUTTON_NEGATIVE, context.getString(R.string.action_cancel)) { _, _ ->

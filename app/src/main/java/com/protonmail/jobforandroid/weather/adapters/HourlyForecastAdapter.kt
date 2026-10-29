@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.DiffUtil
 import com.protonmail.jobforandroid.weather.R
 import com.protonmail.jobforandroid.weather.databinding.ItemHourForecastBinding
 import com.protonmail.jobforandroid.weather.fragments.HourForecast
@@ -22,10 +23,19 @@ class HourlyForecastAdapter : RecyclerView.Adapter<HourlyForecastAdapter.HourHol
 
     fun submitList(value: List<HourForecast>) {
         val expandedEpoch = items.getOrNull(expandedPosition)?.epoch
+        val diff = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+            override fun getOldListSize() = items.size
+            override fun getNewListSize() = value.size
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
+                items[oldItemPosition].epoch == value[newItemPosition].epoch
+            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
+                items[oldItemPosition] == value[newItemPosition]
+        })
         items = value
         expandedPosition = value.indexOfFirst { it.epoch == expandedEpoch }.takeIf { it >= 0 }
             ?: if (value.isEmpty()) RecyclerView.NO_POSITION else 0
-        notifyDataSetChanged()
+        diff.dispatchUpdatesTo(this)
+        if (expandedPosition != RecyclerView.NO_POSITION) notifyItemChanged(expandedPosition)
     }
 
     override fun getItemId(position: Int) = items[position].epoch
@@ -53,11 +63,14 @@ class HourlyForecastAdapter : RecyclerView.Adapter<HourlyForecastAdapter.HourHol
                 expandedPosition = if (previous == position) RecyclerView.NO_POSITION else position
                 val transition = TransitionSet()
                     .addTransition(ChangeBounds())
-                    .addTransition(Fade(Fade.IN).addTarget(R.id.expandedDetails))
+                    .addTransition(Fade().addTarget(R.id.expandedDetails))
                     .setOrdering(TransitionSet.ORDERING_TOGETHER)
                     .setDuration(280)
                     .setInterpolator(android.view.animation.PathInterpolator(0.2f, 0f, 0f, 1f))
-                attachedRecyclerView?.let { TransitionManager.beginDelayedTransition(it, transition) }
+                attachedRecyclerView?.let {
+                    TransitionManager.endTransitions(it)
+                    TransitionManager.beginDelayedTransition(it, transition)
+                }
                 if (previous != RecyclerView.NO_POSITION) notifyItemChanged(previous)
                 if (expandedPosition != RecyclerView.NO_POSITION) notifyItemChanged(expandedPosition)
             }

@@ -53,6 +53,7 @@ class DaysFragment : Fragment(), WeatherAdapter.Listener {
     }
 
     override fun onDestroyView() {
+        _binding?.rcView?.adapter = null
         _binding = null
         super.onDestroyView()
     }

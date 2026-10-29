@@ -13,13 +13,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.android.volley.RequestQueue
@@ -61,8 +59,17 @@ class MainFragment : Fragment(), MainScreenActions {
     private lateinit var requestQueue: RequestQueue
     private var weatherRequest: StringRequest? = null
     private var locationCancellation: CancellationTokenSource? = null
-    private lateinit var pLauncher: ActivityResultLauncher<String>
     private val model: MainViewModel by activityViewModels()
+
+    private var userSelectedCity: String? = null
+    private var activeRequestId: Long = 0L
+
+    private val pLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        activity?.let { host ->
+            Toast.makeText(host, WeatherPresentation.permissionMessage(host, granted), Toast.LENGTH_SHORT).show()
+        }
+        if (granted) checkLocation()
+    }
 
 
     override fun onCreateView(
@@ -79,12 +86,13 @@ class MainFragment : Fragment(), MainScreenActions {
 
         checkPermission()
         init()
-        //requestWeatherData("Astana")
     }
 
     override fun onResume() {
         super.onResume()
-        checkLocation()
+        userSelectedCity?.let {
+            requestWeatherData(it)
+        } ?: checkLocation()
     }
 
     private fun init() = with(binding) {
@@ -99,12 +107,20 @@ class MainFragment : Fragment(), MainScreenActions {
     override fun searchCity() {
         DialogManager.searchByNameDialog(requireContext(), object : DialogManager.Listener {
             override fun onClick(name: String?) {
-                name?.let { requestWeatherData(it) }
+                val query = name?.trim().orEmpty()
+                if (query.isNotEmpty()) {
+                    userSelectedCity = query
+                    requestWeatherData(query)
+                }
             }
         })
     }
 
-    override fun refreshWeather() = checkLocation()
+    override fun refreshWeather() {
+        userSelectedCity?.let {
+            requestWeatherData(it)
+        } ?: checkLocation()
+    }
 
     private fun checkLocation() {
         if (!isPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION) &&
@@ -143,62 +159,72 @@ class MainFragment : Fragment(), MainScreenActions {
         fLocationClient
             .getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, ct.token)
             .addOnSuccessListener { location ->
+                if (!isAdded) return@addOnSuccessListener
                 if (location == null) {
                     showError(R.string.error_location_unavailable)
                 } else {
-                    requestWeatherData("${location.latitude},${location.longitude}")
+                    if (userSelectedCity == null) {
+                        requestWeatherData("${location.latitude},${location.longitude}")
+                    }
                 }
             }
             .addOnFailureListener { error ->
+                if (!isAdded) return@addOnFailureListener
                 Log.e("Weather", "Unable to get current location", error)
                 showError(R.string.error_location_failed)
             }
 
     }
 
-    private fun permissionListener() {
-        pLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-            activity?.let { host ->
-                Toast.makeText(host, WeatherPresentation.permissionMessage(host, it), Toast.LENGTH_SHORT).show()
-            }
-            if (it) checkLocation()
-        }
-    }
-
     private fun checkPermission() {
         if (!isPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
-            permissionListener()
             pLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
     }
 
     private fun requestWeatherData(city: String) {
         weatherRequest?.cancel()
+        val currentRequestId = ++activeRequestId
+        val queryCity = city.trim()
         val url = Uri.parse("https://api.weatherapi.com/v1/forecast.json")
             .buildUpon()
             .appendQueryParameter("key", API_KEY)
-            .appendQueryParameter("q", city.trim())
+            .appendQueryParameter("q", queryCity)
             .appendQueryParameter("days", "7")
             .appendQueryParameter("aqi", "no")
             .appendQueryParameter("alerts", "no")
+            .appendQueryParameter("lang", "ru")
             .build()
-        val request = StringRequest(
-            Request.Method.GET,
+        val request = object : StringRequest(
+            Method.GET,
             url.toString(),
             { result ->
-                try {
-                    parseWeatherData(result)
-                } catch (error: Exception) {
-                    Log.e("Weather", "Unable to parse weather response", error)
-                    showError(R.string.error_weather_parse)
+                if (currentRequestId == activeRequestId && isAdded) {
+                    try {
+                        Log.d("WeatherAPI", "Response: $result")
+                        parseWeatherData(result, queryCity)
+                    } catch (error: Exception) {
+                        Log.e("Weather", "Unable to parse weather response", error)
+                        showError(R.string.error_weather_parse)
+                    }
                 }
-
             },
             { error ->
-                Log.e("Weather", "Weather request failed", error)
-                showError(R.string.error_weather_load)
+                if (currentRequestId == activeRequestId && isAdded) {
+                    Log.e("Weather", "Weather request failed", error)
+                    showError(R.string.error_weather_load)
+                }
             }
-        )
+        ) {
+            override fun parseNetworkResponse(response: com.android.volley.NetworkResponse): com.android.volley.Response<String> {
+                val parsed = try {
+                    String(response.data, java.nio.charset.StandardCharsets.UTF_8)
+                } catch (_: Exception) {
+                    String(response.data)
+                }
+                return com.android.volley.Response.success(parsed, com.android.volley.toolbox.HttpHeaderParser.parseCacheHeaders(response))
+            }
+        }
         weatherRequest = request
         requestQueue.add(request)
     }
@@ -207,20 +233,21 @@ class MainFragment : Fragment(), MainScreenActions {
         if (isAdded) Toast.makeText(requireContext(), getString(messageRes), Toast.LENGTH_SHORT).show()
     }
 
-    private fun parseWeatherData(result: String) {
+    private fun parseWeatherData(result: String, queryCity: String) {
         val mainObject = JSONObject(result)
-        val list = parseDays(mainObject)
+        val list = parseDays(mainObject, queryCity)
         if (list.isEmpty()) throw IllegalStateException("Forecast response contains no days")
-        parseCurrentData(mainObject, list[0])
+        parseCurrentData(mainObject, list[0], queryCity)
         updateWeatherBackground(mainObject)
     }
 
-    private fun parseDays(mainObject: JSONObject): List<WeatherModel> {
+    private fun parseDays(mainObject: JSONObject, queryCity: String): List<WeatherModel> {
         val list = ArrayList<WeatherModel>()
         val daysArray = mainObject.getJSONObject("forecast").getJSONArray("forecastday")
         val country = mainObject.getJSONObject("location").getString("country")
         val region = mainObject.getJSONObject("location").getString("region")
-        val name = mainObject.getJSONObject("location").getString("name")
+        val rawName = mainObject.getJSONObject("location").getString("name")
+        val name = WeatherPresentation.localizedCityName(rawName, queryCity)
         for (i in 0 until daysArray.length()) {
             val day = daysArray[i] as JSONObject
             val item = WeatherModel(
@@ -244,11 +271,13 @@ class MainFragment : Fragment(), MainScreenActions {
     }
 
 
-    private fun parseCurrentData(mainObject: JSONObject, weatherItem: WeatherModel) {
+    private fun parseCurrentData(mainObject: JSONObject, weatherItem: WeatherModel, queryCity: String) {
+        val rawName = mainObject.getJSONObject("location").getString("name")
+        val name = WeatherPresentation.localizedCityName(rawName, queryCity)
         val item = WeatherModel(
             mainObject.getJSONObject("location").getString("country"),
             mainObject.getJSONObject("location").getString("region"),
-            mainObject.getJSONObject("location").getString("name"),
+            name,
             mainObject.getJSONObject("current").getString("last_updated"),
             mainObject.getJSONObject("current").getJSONObject("condition").getString("text"),
             mainObject.getJSONObject("current").getString("temp_c"),
@@ -433,8 +462,8 @@ class MainFragment : Fragment(), MainScreenActions {
         locationCancellation?.cancel()
         locationCancellation = null
         if (::requestQueue.isInitialized) requestQueue.stop()
+        _binding?.screenPager?.adapter = null
         _binding = null
         super.onDestroyView()
     }
 }
-

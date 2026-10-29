@@ -227,6 +227,7 @@ class CurrentWeatherFragment : Fragment() {
         _binding?.weatherIllustration?.apply {
             stopLoading()
             loadUrl("about:blank")
+            (parent as? android.view.ViewGroup)?.removeView(this)
             destroy()
         }
         currentIllustrationFile = null

@@ -13,6 +13,7 @@ import com.protonmail.jobforandroid.weather.databinding.FragmentForecastBinding
 class ForecastFragment : Fragment() {
     private var _binding: FragmentForecastBinding? = null
     private val binding get() = _binding!!
+    private var tabLayoutMediator: TabLayoutMediator? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentForecastBinding.inflate(inflater, container, false)
@@ -22,13 +23,15 @@ class ForecastFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.forecastPager.adapter = VpAdapter(this, listOf(HoursFragment.newInstance(), DaysFragment.newInstance()))
-        TabLayoutMediator(binding.tabLayout, binding.forecastPager) { tab, position ->
+        tabLayoutMediator = TabLayoutMediator(binding.tabLayout, binding.forecastPager) { tab, position ->
             tab.setText(if (position == 0) R.string.forecast_hours else R.string.forecast_days)
-        }.attach()
+        }.also { it.attach() }
     }
 
     override fun onDestroyView() {
-        binding.forecastPager.adapter = null
+        tabLayoutMediator?.detach()
+        tabLayoutMediator = null
+        _binding?.forecastPager?.adapter = null
         _binding = null
         super.onDestroyView()
     }

@@ -74,7 +74,11 @@ class HoursFragment : Fragment() {
         adapter.submitList(hours)
     }
 
-    override fun onDestroyView() { _binding = null; super.onDestroyView() }
+    override fun onDestroyView() {
+        _binding?.rcView?.adapter = null
+        _binding = null
+        super.onDestroyView()
+    }
 
     companion object { @JvmStatic fun newInstance() = HoursFragment() }
 }

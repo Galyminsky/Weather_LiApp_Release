@@ -38,7 +38,7 @@ class NestedScrollableHost @JvmOverloads constructor(
                     val canInnerScroll = childPager?.canScrollHorizontally(if (dx > 0) -1 else 1) == true
                     parent?.requestDisallowInterceptTouchEvent(canInnerScroll)
                 } else if (gestureDirection == 2) {
-                    parent?.requestDisallowInterceptTouchEvent(false)
+                    parent?.requestDisallowInterceptTouchEvent(true)
                 }
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL ->

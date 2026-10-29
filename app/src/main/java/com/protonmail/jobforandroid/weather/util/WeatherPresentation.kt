@@ -67,6 +67,48 @@ object WeatherPresentation {
     private val ruDate = Locale.forLanguageTag("ru-RU")
     private val dayFormatter = DateTimeFormatter.ofPattern("EEEE, d MMMM", ruDate)
 
+    private val cityNames = mapOf(
+        "lisakovsk" to "Лисаковск",
+        "moscow" to "Москва",
+        "saint petersburg" to "Санкт-Петербург",
+        "st petersburg" to "Санкт-Петербург",
+        "astana" to "Астана",
+        "nur-sultan" to "Астана",
+        "almaty" to "Алматы",
+        "shymkent" to "Шымкент",
+        "karaganda" to "Караганда",
+        "qostanay" to "Костанай",
+        "kostanay" to "Костанай",
+        "kustanay" to "Костанай",
+        "aktobe" to "Актобе",
+        "taraz" to "Тараз",
+        "pavlodar" to "Павлодар",
+        "semey" to "Семей",
+        "ust-kamenogorsk" to "Усть-Каменогорск",
+        "kyzylorda" to "Кызылорда",
+        "ural'sk" to "Уральск",
+        "uralsk" to "Уральск",
+        "petropavl" to "Петропавловск",
+        "petropavlovsk" to "Петропавловск",
+        "aktau" to "Актау",
+        "temirtau" to "Темиртау",
+        "turkestan" to "Туркестан",
+        "kokshetau" to "Кокшетау",
+        "atyrau" to "Атырау",
+        "ekibastuz" to "Экибастуз",
+        "rudny" to "Рудный",
+        "zhezkazgan" to "Жезказган"
+    )
+
+    fun localizedCityName(cityName: String, requestedQuery: String? = null): String {
+        val query = requestedQuery?.trim().orEmpty()
+        if (query.any { it in 'а'..'я' || it in 'А'..'Я' }) {
+            return query.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
+        }
+        val lowerName = cityName.trim().lowercase(Locale.ROOT)
+        return cityNames[lowerName] ?: cityName
+    }
+
     fun condition(text: String): String =
         conditions[text.trim().lowercase(Locale.ROOT)] ?: "Погодные условия неизвестны"
 
