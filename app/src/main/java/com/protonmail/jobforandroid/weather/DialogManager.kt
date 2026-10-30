@@ -2,7 +2,8 @@ package com.protonmail.jobforandroid.weather
 
 import android.app.AlertDialog
 import android.content.Context
-import android.widget.EditText
+import android.view.LayoutInflater
+import com.protonmail.jobforandroid.weather.databinding.DialogSearchCityBinding
 
 object DialogManager {
     fun locationSettingsDialog(context: Context, listener: Listener) {
@@ -21,22 +22,23 @@ object DialogManager {
     }
 
     fun searchByNameDialog(context: Context, listener: Listener) {
-        val builder = AlertDialog.Builder(context)
-        val edName = EditText(context)
-        edName.hint = context.getString(R.string.search_city_hint)
-        builder.setView(edName)
-        val dialog = builder.create()
-        dialog.setTitle(context.getString(R.string.dialog_city_name))
-        dialog.setButton(AlertDialog.BUTTON_POSITIVE, context.getString(R.string.action_ok)) { _, _ ->
-            val query = edName.text.toString().trim()
+        val binding = DialogSearchCityBinding.inflate(LayoutInflater.from(context))
+        val dialog = AlertDialog.Builder(context)
+            .setView(binding.root)
+            .create()
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        binding.btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+        binding.btnOk.setOnClickListener {
+            val query = binding.edCityName.text.toString().trim()
             if (query.isNotEmpty()) {
                 listener.onClick(query)
             }
             dialog.dismiss()
         }
-        dialog.setButton(AlertDialog.BUTTON_NEGATIVE, context.getString(R.string.action_cancel)) { _, _ ->
-            dialog.dismiss()
-        }
+        binding.edCityName.requestFocus()
         dialog.show()
     }
 

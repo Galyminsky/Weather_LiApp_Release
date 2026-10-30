@@ -21,15 +21,14 @@ class NeomorphicCardView @JvmOverloads constructor(
     private var offset = dp(4f)
     private var neonGlowColor = Color.TRANSPARENT
     private var neonGlowRadius = 0f
-    private var faceOpacity = 1f
-    private val facePaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private var faceOpacity = 0.25f
     private val shadowPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val neonGlowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE }
     private val faceBounds = RectF()
     private val neonGlowBounds = RectF()
 
     init {
-        context.obtainStyledAttributes(attrs, R.styleable.NeomorphicCardView).apply {
+        context.obtainStyledAttributes(attrs, R.styleable.NeomorphicCardView, defStyleAttr, 0).apply {
             inset = getDimension(R.styleable.NeomorphicCardView_neomorphicInset, inset)
             blur = getDimension(R.styleable.NeomorphicCardView_neomorphicBlur, blur)
             offset = getDimension(R.styleable.NeomorphicCardView_neomorphicOffset, offset)
@@ -53,7 +52,7 @@ class NeomorphicCardView @JvmOverloads constructor(
         drawNeonGlow(canvas)
 
         faceBounds.set(inset, inset, width - inset, height - inset)
-        val faceColor = context.getColor(R.color.weather_neomorphic_face)
+        val faceColor = Color.WHITE
         val cornerRadius = (radius - inset * 0.35f).coerceAtLeast(inset * 0.6f)
 
         shadowPaint.color = withAlpha(faceColor, faceOpacity)
@@ -64,9 +63,6 @@ class NeomorphicCardView @JvmOverloads constructor(
         shadowPaint.setShadowLayer(blur, offset, offset, context.getColor(R.color.weather_shadow_dark))
         canvas.drawRoundRect(faceBounds, cornerRadius, cornerRadius, shadowPaint)
         shadowPaint.clearShadowLayer()
-
-        facePaint.color = withAlpha(faceColor, faceOpacity)
-        canvas.drawRoundRect(faceBounds, cornerRadius, cornerRadius, facePaint)
     }
 
     fun setNeonGlow(color: Int, radiusDp: Float) {

@@ -123,10 +123,10 @@ class MainFragment : Fragment(), MainScreenActions {
     }
 
     override fun refreshWeather() {
+        model.userSelectedCity = null
+        model.loadedWeatherQuery = null
         model.failedWeatherQuery = null
-        model.userSelectedCity?.let {
-            requestWeatherData(it)
-        } ?: checkLocation()
+        checkLocation()
     }
 
     private fun checkLocation() {

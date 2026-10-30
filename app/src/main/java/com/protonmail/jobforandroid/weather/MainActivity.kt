@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         window.isNavigationBarContrastEnforced = false
 
-        binding.root.setBackgroundColor(getColor(R.color.blue))
+        binding.root.setBackgroundColor(android.graphics.Color.TRANSPARENT)
         val isDarkTheme =
             (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
                 Configuration.UI_MODE_NIGHT_YES
