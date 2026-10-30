@@ -33,7 +33,7 @@ class DaysFragment : Fragment(), WeatherAdapter.Listener {
 
         init()
         model.liveDataList.observe(viewLifecycleOwner) {
-            adapter.submitList(it.drop(1))
+            adapter.submitList(it?.drop(1).orEmpty())
         }
     }
 
@@ -53,6 +53,7 @@ class DaysFragment : Fragment(), WeatherAdapter.Listener {
     }
 
     override fun onDestroyView() {
+        _binding?.rcView?.adapter = null
         _binding = null
         super.onDestroyView()
     }

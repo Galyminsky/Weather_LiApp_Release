@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.protonmail.jobforandroid.weather.widgets.NeomorphicCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="2dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    app:cardCornerRadius="22dp"
+    app:cardElevation="0dp"
+    app:neomorphicInset="4dp"
+    app:neomorphicBlur="3dp"
+    app:neomorphicOffset="1dp"
+    app:strokeColor="@android:color/transparent"
+    app:strokeWidth="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Закрытая часть карточки (всегда видима и сохраняет своё положение) -->
+        <LinearLayout
+            android:id="@+id/compactHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:minHeight="82dp"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/tvTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_semibold"
+                    android:textColor="@color/weather_text_primary"
+                    android:textSize="16sp"
+                    tools:text="14:00" />
+                <TextView
+                    android:id="@+id/tvDayLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.Weather.Caption"
+                    tools:text="Сегодня" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="44dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                android:background="@color/weather_outline" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <FrameLayout
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:layout_gravity="center_vertical">
+                        <ImageView
+                            android:id="@+id/ivCompactIcon"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:contentDescription="@string/weather_image"
+                            tools:src="@drawable/ic_weather_unknown" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/tvCompactTemperature"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:fontFamily="@font/manrope_semibold"
+                        android:textColor="@color/weather_text_primary"
+                        android:textSize="22sp"
+                        tools:text="18°" />
+                </LinearLayout>
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <FrameLayout
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:layout_gravity="center_vertical">
+                        <ImageView
+                            android:id="@+id/ivRainCompact"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:contentDescription="@null"
+                            android:padding="7dp"
+                            app:tint="@color/weather_text_secondary"
+                            app:srcCompat="@drawable/ic_weather_precipitation" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/tvRain"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:fontFamily="@font/inter_medium"
+                        android:textColor="@color/weather_text_secondary"
+                        android:textSize="16sp"
+                        tools:text="40%" />
+                </LinearLayout>
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvConditionCompact"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tvRainLabelCompact"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <!-- Раскрываемая область с сеткой 2x2 под закрытой частью -->
+        <LinearLayout
+            android:id="@+id/expandedDetails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="16dp"
+            android:visibility="gone">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="16dp"
+                android:background="@color/weather_outline" />
+
+            <!-- Сетка 2 × 2 погодных параметров -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Строка 1: Давление и Скорость ветра -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:orientation="horizontal">
+
+                    <!-- Ячейка 1: Давление -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:paddingEnd="8dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:contentDescription="@null"
+                                app:tint="@color/weather_text_secondary"
+                                app:srcCompat="@drawable/ic_weather_pressure" />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_weight="1"
+                                android:maxLines="1"
+                                android:ellipsize="end"
+                                android:text="@string/weather_pressure"
+                                android:textAppearance="@style/TextAppearance.Weather.Caption"
+                                android:textColor="@color/weather_text_secondary" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tvExpandedPressure"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:textAppearance="@style/TextAppearance.Weather.Value"
+                            android:textColor="@color/weather_text_primary"
+                            tools:text="760 мм рт. ст." />
+                    </LinearLayout>
+
+                    <!-- Ячейка 2: Скорость ветра -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:paddingStart="8dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:contentDescription="@null"
+                                app:tint="@color/weather_text_secondary"
+                                app:srcCompat="@drawable/ic_weather_wind" />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_weight="1"
+                                android:maxLines="1"
+                                android:ellipsize="end"
+                                android:text="@string/weather_wind_speed_label"
+                                android:textAppearance="@style/TextAppearance.Weather.Caption"
+                                android:textColor="@color/weather_text_secondary" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tvExpandedWindSpeed"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:textAppearance="@style/TextAppearance.Weather.Value"
+                            android:textColor="@color/weather_text_primary"
+                            tools:text="3.6 м/с" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Строка 2: Влажность и Ощущается как -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- Ячейка 3: Влажность -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:paddingEnd="8dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:contentDescription="@null"
+                                app:tint="@color/weather_text_secondary"
+                                app:srcCompat="@drawable/ic_weather_humidity" />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_weight="1"
+                                android:maxLines="1"
+                                android:ellipsize="end"
+                                android:text="@string/weather_humidity"
+                                android:textAppearance="@style/TextAppearance.Weather.Caption"
+                                android:textColor="@color/weather_text_secondary" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tvExpandedHumidity"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:textAppearance="@style/TextAppearance.Weather.Value"
+                            android:textColor="@color/weather_text_primary"
+                            tools:text="64%" />
+                    </LinearLayout>
+
+                    <!-- Ячейка 4: Ощущается как -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:paddingStart="8dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:contentDescription="@null"
+                                app:tint="@color/weather_text_secondary"
+                                app:srcCompat="@drawable/ic_weather_thermometer" />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_weight="1"
+                                android:maxLines="1"
+                                android:ellipsize="end"
+                                android:text="@string/weather_feels_like_label"
+                                android:textAppearance="@style/TextAppearance.Weather.Caption"
+                                android:textColor="@color/weather_text_secondary" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tvExpandedFeelsLike"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:textAppearance="@style/TextAppearance.Weather.Value"
+                            android:textColor="@color/weather_text_primary"
+                            tools:text="18°C" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</com.protonmail.jobforandroid.weather.widgets.NeomorphicCardView>

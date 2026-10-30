@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="NeomorphicCardView">
+        <attr name="neomorphicInset" format="dimension" />
+        <attr name="neomorphicBlur" format="dimension" />
+        <attr name="neomorphicOffset" format="dimension" />
+        <attr name="neomorphicGlowColor" format="color" />
+        <attr name="neomorphicGlowRadius" format="dimension" />
+        <attr name="neomorphicFaceOpacity" format="float" />
+    </declare-styleable>
+</resources>

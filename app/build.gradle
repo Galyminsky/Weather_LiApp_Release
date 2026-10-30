@@ -17,10 +17,22 @@ android {
     }
 
     buildTypes.each {
+        def apiKeyFile = project.rootProject.file("apikey.properties")
+        if (!apiKeyFile.isFile()) {
+            throw new GradleException("WeatherAPI key is missing. Copy apikey.properties.example to apikey.properties and set API_KEY.")
+        }
+
         Properties properties = new Properties()
-        properties.load(project.rootProject.file("apikey.properties").newDataInputStream ())
-        def apiKey = properties.getProperty("API_KEY", "")
-        it.buildConfigField "String", "API_KEY", apiKey
+        apiKeyFile.withInputStream { properties.load(it) }
+        def rawApiKey = properties.getProperty("API_KEY")?.trim()
+        if (!rawApiKey || !rawApiKey.startsWith('"') || !rawApiKey.endsWith('"')) {
+            throw new GradleException("API_KEY must be set as a quoted value in apikey.properties.")
+        }
+        def apiKey = rawApiKey.substring(1, rawApiKey.length() - 1).trim()
+        if (!apiKey || apiKey == "YOUR_WEATHERAPI_KEY") {
+            throw new GradleException("API_KEY is empty or still a placeholder in apikey.properties.")
+        }
+        it.buildConfigField "String", "API_KEY", rawApiKey
     }
 
     buildTypes {

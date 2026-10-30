@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <!-- Picasso exposes unused notification RemoteViews APIs; app code only loads into Views. -->
+    <issue id="NotificationPermission">
+        <ignore path="app/src/main/AndroidManifest.xml" />
+    </issue>
+</lint>
