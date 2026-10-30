@@ -1,24 +1,9 @@
 <resources>
     <string name="app_name">Weather LiApp</string>
 
-    <string name="Date_and_time">23.06.2022 22:26</string>
-    <string name="Name_City">Лисаковск</string>
-    <string name="Current_Temperature">20°C</string>
-    <string name="Condition">Ясно</string>
-    <string name="Max_Min_Temperature">37°C / 14°C</string>
-    <string name="Hours">Часы</string>
-    <string name="Day">День</string>
 
-    <string name="Search">Поиск</string>
-    <string name="Sync">Обновить</string>
-    <string name="days">ДНИ</string>
-    <string name="hours">ЧАСЫ</string>
-    <string name="jule_21_07_22">21 июля 2022</string>
-    <string name="sunny">Ясно</string>
     <string name="weather_image">Иллюстрация погоды</string>
     <string name="empty">Нет данных</string>
-    <string name="tvCountry">Казахстан</string>
-    <string name="last_updated">Обновлено</string>
     <string name="sunrise">Восход</string>
     <string name="sunset">Закат</string>
     <string name="search_city_hint">Найти город…</string>
@@ -27,17 +12,13 @@
     <string name="weather_feels_like_label">Ощущается как</string>
     <string name="weather_high_low">Макс. %1$s°C · мин. %2$s°C</string>
     <string name="weather_updated_at">Обновлено %1$s</string>
-    <string name="weather_date_unknown">Сегодня</string>
     <string name="weather_wind">Ветер</string>
     <string name="weather_humidity">Влажность</string>
     <string name="weather_precipitation">Вероятность осадков</string>
     <string name="weather_pressure">Давление</string>
     <string name="weather_metric_missing">—</string>
-    <string name="weather_wind_value">%1$s км/ч · %2$s</string>
     <string name="weather_percent_value">%1$s%%</string>
     <string name="weather_pressure_value">%1$s гПа</string>
-    <string name="weather_location_summary">%1$s · %2$s</string>
-    <string name="weather_search_accessibility">Поиск города</string>
     <string name="weather_refresh_accessibility">Обновить погоду</string>
     <string name="forecast_hours">По часам</string>
     <string name="forecast_days">По дням</string>
@@ -71,7 +52,9 @@
     <string name="error_location_failed">Не удалось определить местоположение</string>
     <string name="error_weather_load">Не удалось загрузить погоду. Проверьте подключение к интернету.</string>
     <string name="error_weather_parse">Не удалось прочитать данные о погоде</string>
-    <string name="condition_unknown">Погодные условия неизвестны</string>
+    <string name="current_location_label">текущего местоположения</string>
+    <string name="weather_loading_city">Загружаем прогноз для %1$s…</string>
+    <string name="weather_city_load_failed">Не удалось загрузить прогноз для %1$s</string>
     <string name="weather_wind_speed_label">&#1057;&#1082;&#1086;&#1088;&#1086;&#1089;&#1090;&#1100; &#1074;&#1077;&#1090;&#1088;&#1072;</string>
     <string name="weather_today">&#1057;&#1077;&#1075;&#1086;&#1076;&#1085;&#1103;</string>
     <string name="weather_tomorrow">&#1047;&#1072;&#1074;&#1090;&#1088;&#1072;</string>

@@ -14,15 +14,31 @@ import com.protonmail.jobforandroid.weather.databinding.ItemHourForecastBinding
 import com.protonmail.jobforandroid.weather.fragments.HourForecast
 import com.squareup.picasso.Picasso
 
-class HourlyForecastAdapter : RecyclerView.Adapter<HourlyForecastAdapter.HourHolder>() {
+class HourlyForecastAdapter(
+    initialSelectedEpoch: Long?,
+    selectionInitialized: Boolean,
+    private val onSelectedEpochChanged: (Long?) -> Unit
+) : RecyclerView.Adapter<HourlyForecastAdapter.HourHolder>() {
     private var items: List<HourForecast> = emptyList()
-    private var expandedPosition = 0
+    private var expandedPosition = RecyclerView.NO_POSITION
+    private var selectedEpoch: Long? = initialSelectedEpoch
+    private var selectionInitialized = selectionInitialized
     private var attachedRecyclerView: RecyclerView? = null
 
     init { setHasStableIds(true) }
 
     fun submitList(value: List<HourForecast>) {
-        val expandedEpoch = items.getOrNull(expandedPosition)?.epoch
+        val oldItems = items
+        val oldExpandedEpoch = oldItems.getOrNull(expandedPosition)?.epoch
+        val newExpandedPosition = when {
+            value.isEmpty() -> RecyclerView.NO_POSITION
+            selectedEpoch != null -> value.indexOfFirst { it.epoch == selectedEpoch }
+                .takeIf { it >= 0 } ?: RecyclerView.NO_POSITION
+            selectionInitialized -> RecyclerView.NO_POSITION
+            else -> 0
+        }
+        val newExpandedEpoch = value.getOrNull(newExpandedPosition)?.epoch
+        val shouldInitializeSelection = !selectionInitialized && newExpandedEpoch != null
         val diff = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
             override fun getOldListSize() = items.size
             override fun getNewListSize() = value.size
@@ -32,10 +48,21 @@ class HourlyForecastAdapter : RecyclerView.Adapter<HourlyForecastAdapter.HourHol
                 items[oldItemPosition] == value[newItemPosition]
         })
         items = value
-        expandedPosition = value.indexOfFirst { it.epoch == expandedEpoch }.takeIf { it >= 0 }
-            ?: if (value.isEmpty()) RecyclerView.NO_POSITION else 0
+        expandedPosition = newExpandedPosition
+        if (newExpandedEpoch != null) selectedEpoch = newExpandedEpoch
+        if (shouldInitializeSelection) {
+            selectionInitialized = true
+            onSelectedEpochChanged(newExpandedEpoch)
+        }
         diff.dispatchUpdatesTo(this)
-        if (expandedPosition != RecyclerView.NO_POSITION) notifyItemChanged(expandedPosition)
+        if (oldExpandedEpoch != newExpandedEpoch) {
+            listOfNotNull(oldExpandedEpoch, newExpandedEpoch).distinct().forEach { epoch ->
+                val newPosition = value.indexOfFirst { it.epoch == epoch }
+                if (newPosition >= 0 && oldItems.firstOrNull { it.epoch == epoch } == value[newPosition]) {
+                    notifyItemChanged(newPosition)
+                }
+            }
+        }
     }
 
     override fun getItemId(position: Int) = items[position].epoch
@@ -61,6 +88,10 @@ class HourlyForecastAdapter : RecyclerView.Adapter<HourlyForecastAdapter.HourHol
                 if (position == RecyclerView.NO_POSITION) return@setOnClickListener
                 val previous = expandedPosition
                 expandedPosition = if (previous == position) RecyclerView.NO_POSITION else position
+                val previousSelectedEpoch = selectedEpoch
+                selectedEpoch = items.getOrNull(expandedPosition)?.epoch
+                selectionInitialized = true
+                if (selectedEpoch != previousSelectedEpoch) onSelectedEpochChanged(selectedEpoch)
                 val transition = TransitionSet()
                     .addTransition(ChangeBounds())
                     .addTransition(Fade().addTarget(R.id.expandedDetails))
@@ -94,6 +125,10 @@ class HourlyForecastAdapter : RecyclerView.Adapter<HourlyForecastAdapter.HourHol
             Picasso.get().load(iconUrl).placeholder(R.drawable.ic_weather_unknown).error(R.drawable.ic_weather_unknown).into(ivCompactIcon)
             expandedDetails.visibility = if (expanded) View.VISIBLE else View.GONE
             root.isSelected = expanded
+            root.strokeWidth = if (expanded) (2f * context.resources.displayMetrics.density).toInt() else 0
+            val selectedGlowColor = if (expanded) context.getColor(R.color.weather_neon) else android.graphics.Color.TRANSPARENT
+            root.setStrokeColor(if (expanded) selectedGlowColor else android.graphics.Color.TRANSPARENT)
+            root.setNeonGlow(selectedGlowColor, if (expanded) 4f else 0f)
             root.contentDescription = "${hour.time}, ${hour.temperature?.let { "${it.toInt()}°" } ?: missing}, ${if (expanded) "открыто" else "свернуто"}"
         }
     }

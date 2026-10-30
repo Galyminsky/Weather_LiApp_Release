@@ -7,6 +7,43 @@
     android:background="@color/weather_background"
     tools:context=".fragments.CurrentWeatherFragment">
 
+    <ImageView
+        android:id="@+id/weatherBackgroundPrimary"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="@null"
+        android:importantForAccessibility="no"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/weatherBackgroundSecondary"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="@null"
+        android:importantForAccessibility="no"
+        android:scaleType="centerCrop"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/weatherBackgroundScrim"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#33000000"
+        android:importantForAccessibility="no"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.core.widget.NestedScrollView
         android:id="@+id/weatherDetailsScroll"
         android:layout_width="match_parent"
@@ -84,18 +121,27 @@
                     app:iconTint="?attr/colorPrimary"
                     app:iconGravity="textStart"
                     app:iconPadding="0dp"
+                    app:strokeColor="@color/weather_accent_secondary"
+                    app:strokeWidth="1.5dp"
+                    android:outlineAmbientShadowColor="@color/weather_accent_secondary"
+                    android:outlineSpotShadowColor="@color/weather_accent_secondary"
                     android:text="" />
             </LinearLayout>
 
             <!-- Большая карточка текущей погоды -->
             <com.protonmail.jobforandroid.weather.widgets.NeomorphicCardView
                 style="@style/Widget.Weather.Card.Forecast"
+                app:neomorphicFaceOpacity="0.25"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/weather_space_2"
                 android:layout_marginStart="-4dp"
                 android:layout_marginEnd="-4dp"
-                app:shapeAppearanceOverlay="@style/ShapeAppearance.Weather.Card">
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Weather.Card"
+                app:strokeColor="@color/weather_neon"
+                app:strokeWidth="1dp"
+                app:neomorphicGlowColor="@color/weather_neon"
+                app:neomorphicGlowRadius="4dp">
 
                 <LinearLayout
                     android:id="@+id/weatherHero"
@@ -144,7 +190,7 @@
                             android:contentDescription="@string/weather_image"
                             android:scaleType="fitCenter"
                             android:src="@drawable/ic_weather_unknown"
-                            android:tint="?attr/colorOnSurfaceVariant"
+                            app:tint="?attr/colorOnSurfaceVariant"
                             android:visibility="gone"
                             tools:visibility="visible" />
                     </FrameLayout>
@@ -185,6 +231,7 @@
             <com.protonmail.jobforandroid.weather.widgets.NeomorphicCardView
                 android:id="@+id/cardTodayTemperatureDetails"
                 style="@style/Widget.Weather.Card.Forecast"
+                app:neomorphicFaceOpacity="0.25"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/weather_space_2"
@@ -247,6 +294,7 @@
                 <com.protonmail.jobforandroid.weather.widgets.NeomorphicCardView
                     android:id="@+id/cardWind"
                     style="@style/Widget.Weather.Card.Forecast"
+                    app:neomorphicFaceOpacity="0.25"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/weather_space_1"
@@ -307,6 +355,7 @@
                 <com.protonmail.jobforandroid.weather.widgets.NeomorphicCardView
                     android:id="@+id/cardHumidity"
                     style="@style/Widget.Weather.Card.Forecast"
+                    app:neomorphicFaceOpacity="0.25"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginStart="@dimen/weather_space_1"
@@ -366,6 +415,7 @@
                 <com.protonmail.jobforandroid.weather.widgets.NeomorphicCardView
                     android:id="@+id/cardPrecipitation"
                     style="@style/Widget.Weather.Card.Forecast"
+                    app:neomorphicFaceOpacity="0.25"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/weather_space_1"
@@ -416,6 +466,7 @@
                 <com.protonmail.jobforandroid.weather.widgets.NeomorphicCardView
                     android:id="@+id/cardPressure"
                     style="@style/Widget.Weather.Card.Forecast"
+                    app:neomorphicFaceOpacity="0.25"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginStart="@dimen/weather_space_1"
@@ -467,6 +518,7 @@
             <com.protonmail.jobforandroid.weather.widgets.NeomorphicCardView
                 android:id="@+id/linearLayout"
                 style="@style/Widget.Weather.Card.Forecast"
+                app:neomorphicFaceOpacity="0.25"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/weather_space_3"

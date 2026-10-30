@@ -20,6 +20,8 @@ class HourlyTemperatureChartView @JvmOverloads constructor(
 
     private var points: List<ChartPoint> = emptyList()
     private var lastHoursJson: String? = null
+    private var xs = FloatArray(0)
+    private var ys = FloatArray(0)
 
     private val linePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
@@ -60,6 +62,7 @@ class HourlyTemperatureChartView @JvmOverloads constructor(
         lastHoursJson = hoursJson
         if (hoursJson.isNullOrBlank()) {
             points = emptyList()
+            ensureCoordinateBuffers()
             invalidate()
             return
         }
@@ -82,7 +85,13 @@ class HourlyTemperatureChartView @JvmOverloads constructor(
             }
         }
         points = list
+        ensureCoordinateBuffers()
         invalidate()
+    }
+
+    private fun ensureCoordinateBuffers() {
+        if (xs.size != points.size) xs = FloatArray(points.size)
+        if (ys.size != points.size) ys = FloatArray(points.size)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -108,9 +117,6 @@ class HourlyTemperatureChartView @JvmOverloads constructor(
         val tempRange = max(1f, maxTemp - minTemp)
 
         val stepX = if (points.size > 1) w / (points.size - 1) else w
-
-        val xs = FloatArray(points.size)
-        val ys = FloatArray(points.size)
 
         points.forEachIndexed { index, pt ->
             xs[index] = padLeft + index * stepX

@@ -49,10 +49,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.placeHolder, MainFragment.newInstance())
-            .commit()
+        if (supportFragmentManager.findFragmentById(R.id.placeHolder) == null) {
+            supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.placeHolder, MainFragment.newInstance())
+                .commit()
+        }
     }
 
 }

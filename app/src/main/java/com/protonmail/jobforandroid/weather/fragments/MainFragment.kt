@@ -58,13 +58,15 @@ class MainFragment : Fragment(), MainScreenActions {
     private lateinit var fLocationClient: FusedLocationProviderClient
     private lateinit var requestQueue: RequestQueue
     private var weatherRequest: StringRequest? = null
+    private var inFlightWeatherQuery: String? = null
     private var locationCancellation: CancellationTokenSource? = null
     private val model: MainViewModel by activityViewModels()
 
-    private var userSelectedCity: String? = null
     private var activeRequestId: Long = 0L
 
-    private val pLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+    private val pLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { grants ->
+        val granted = grants[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+            grants[Manifest.permission.ACCESS_COARSE_LOCATION] == true
         activity?.let { host ->
             Toast.makeText(host, WeatherPresentation.permissionMessage(host, granted), Toast.LENGTH_SHORT).show()
         }
@@ -90,8 +92,12 @@ class MainFragment : Fragment(), MainScreenActions {
 
     override fun onResume() {
         super.onResume()
-        userSelectedCity?.let {
-            requestWeatherData(it)
+        model.userSelectedCity?.let { city ->
+            if (model.loadedWeatherQuery != city || model.liveDataToday.value == null) {
+                if (inFlightWeatherQuery != city && model.failedWeatherQuery != city) {
+                    requestWeatherData(city)
+                }
+            }
         } ?: checkLocation()
     }
 
@@ -109,7 +115,7 @@ class MainFragment : Fragment(), MainScreenActions {
             override fun onClick(name: String?) {
                 val query = name?.trim().orEmpty()
                 if (query.isNotEmpty()) {
-                    userSelectedCity = query
+                    model.userSelectedCity = query
                     requestWeatherData(query)
                 }
             }
@@ -117,12 +123,14 @@ class MainFragment : Fragment(), MainScreenActions {
     }
 
     override fun refreshWeather() {
-        userSelectedCity?.let {
+        model.failedWeatherQuery = null
+        model.userSelectedCity?.let {
             requestWeatherData(it)
         } ?: checkLocation()
     }
 
     private fun checkLocation() {
+        if (model.userSelectedCity != null || locationCancellation != null || inFlightWeatherQuery != null) return
         if (!isPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION) &&
             !isPermissionGranted(Manifest.permission.ACCESS_COARSE_LOCATION)
         ) return
@@ -143,49 +151,76 @@ class MainFragment : Fragment(), MainScreenActions {
     }
 
     private fun getLocation() {
-        locationCancellation?.cancel()
+        val hasFinePermission = ActivityCompat.checkSelfPermission(
+            requireContext(), Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+        val hasCoarsePermission = ActivityCompat.checkSelfPermission(
+            requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+        if (!hasFinePermission && !hasCoarsePermission) return
+
         val ct = CancellationTokenSource()
         locationCancellation = ct
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            return
+        val locationPriority = if (hasFinePermission) {
+            Priority.PRIORITY_HIGH_ACCURACY
+        } else {
+            Priority.PRIORITY_BALANCED_POWER_ACCURACY
         }
         fLocationClient
-            .getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, ct.token)
+            .getCurrentLocation(locationPriority, ct.token)
             .addOnSuccessListener { location ->
+                if (locationCancellation !== ct) return@addOnSuccessListener
+                locationCancellation = null
                 if (!isAdded) return@addOnSuccessListener
                 if (location == null) {
+                    model.weatherRequestStatus.value = null
                     showError(R.string.error_location_unavailable)
                 } else {
-                    if (userSelectedCity == null) {
-                        requestWeatherData("${location.latitude},${location.longitude}")
+                    if (model.userSelectedCity == null) {
+                        val coordinates = "${location.latitude},${location.longitude}"
+                        if (model.failedWeatherQuery != coordinates) requestWeatherData(
+                            coordinates,
+                            getString(R.string.current_location_label)
+                        )
                     }
                 }
             }
             .addOnFailureListener { error ->
+                if (locationCancellation !== ct) return@addOnFailureListener
+                locationCancellation = null
                 if (!isAdded) return@addOnFailureListener
-                Log.e("Weather", "Unable to get current location", error)
+                model.weatherRequestStatus.value = null
+                val statusCode = (error as? com.google.android.gms.common.api.ApiException)?.statusCode
+                Log.e("Weather", "Unable to get current location (status=${statusCode ?: "unknown"})")
                 showError(R.string.error_location_failed)
             }
 
     }
 
     private fun checkPermission() {
-        if (!isPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
-            pLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-        }
+        if (model.userSelectedCity != null ||
+            isPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION) ||
+            isPermissionGranted(Manifest.permission.ACCESS_COARSE_LOCATION) ||
+            model.locationPermissionRequestAttempted
+        ) return
+
+        model.locationPermissionRequestAttempted = true
+        pLauncher.launch(
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+        )
     }
 
-    private fun requestWeatherData(city: String) {
+    private fun requestWeatherData(city: String, displayCity: String = city) {
         weatherRequest?.cancel()
         val currentRequestId = ++activeRequestId
         val queryCity = city.trim()
+        model.failedWeatherQuery = null
+        inFlightWeatherQuery = queryCity
+        clearWeatherData()
+        model.weatherRequestStatus.value = getString(R.string.weather_loading_city, displayCity)
         val url = Uri.parse("https://api.weatherapi.com/v1/forecast.json")
             .buildUpon()
             .appendQueryParameter("key", API_KEY)
@@ -199,19 +234,34 @@ class MainFragment : Fragment(), MainScreenActions {
             Method.GET,
             url.toString(),
             { result ->
+                if (currentRequestId == activeRequestId) {
+                    inFlightWeatherQuery = null
+                    weatherRequest = null
+                }
                 if (currentRequestId == activeRequestId && isAdded) {
                     try {
-                        Log.d("WeatherAPI", "Response: $result")
                         parseWeatherData(result, queryCity)
+                        model.weatherRequestStatus.value = null
                     } catch (error: Exception) {
-                        Log.e("Weather", "Unable to parse weather response", error)
+                        Log.e("Weather", "Unable to parse weather response (type=${error.javaClass.simpleName})")
+                        model.failedWeatherQuery = queryCity
+                        clearWeatherData()
+                        model.weatherRequestStatus.value = getString(R.string.weather_city_load_failed, displayCity)
                         showError(R.string.error_weather_parse)
                     }
                 }
             },
             { error ->
+                if (currentRequestId == activeRequestId) {
+                    inFlightWeatherQuery = null
+                    weatherRequest = null
+                }
                 if (currentRequestId == activeRequestId && isAdded) {
-                    Log.e("Weather", "Weather request failed", error)
+                    val statusCode = error.networkResponse?.statusCode
+                    Log.e("Weather", "Weather request failed (status=${statusCode ?: "unknown"}, type=${error.javaClass.simpleName})")
+                    model.failedWeatherQuery = queryCity
+                    clearWeatherData()
+                    model.weatherRequestStatus.value = getString(R.string.weather_city_load_failed, displayCity)
                     showError(R.string.error_weather_load)
                 }
             }
@@ -229,6 +279,15 @@ class MainFragment : Fragment(), MainScreenActions {
         requestQueue.add(request)
     }
 
+    private fun clearWeatherData() {
+        model.liveDataToday.value = null
+        model.liveDataCurrent.value = null
+        model.liveDataList.value = emptyList()
+        model.liveDataTodayMetrics.value = null
+        model.liveDataWeatherIcon.value = null
+        model.liveDataWeatherBackdrop.value = null
+    }
+
     private fun showError(messageRes: Int) {
         if (isAdded) Toast.makeText(requireContext(), getString(messageRes), Toast.LENGTH_SHORT).show()
     }
@@ -239,6 +298,7 @@ class MainFragment : Fragment(), MainScreenActions {
         if (list.isEmpty()) throw IllegalStateException("Forecast response contains no days")
         parseCurrentData(mainObject, list[0], queryCity)
         updateWeatherBackground(mainObject)
+        model.loadedWeatherQuery = queryCity
     }
 
     private fun parseDays(mainObject: JSONObject, queryCity: String): List<WeatherModel> {
@@ -459,6 +519,8 @@ class MainFragment : Fragment(), MainScreenActions {
     override fun onDestroyView() {
         weatherRequest?.cancel()
         weatherRequest = null
+        inFlightWeatherQuery = null
+        model.weatherRequestStatus.value = null
         locationCancellation?.cancel()
         locationCancellation = null
         if (::requestQueue.isInitialized) requestQueue.stop()

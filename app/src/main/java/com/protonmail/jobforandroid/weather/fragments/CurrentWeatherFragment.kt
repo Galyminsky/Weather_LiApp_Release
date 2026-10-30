@@ -1,13 +1,16 @@
 ﻿package com.protonmail.jobforandroid.weather.fragments
 
-import android.graphics.drawable.GradientDrawable
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewPropertyAnimator
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.squareup.picasso.Callback
@@ -20,6 +23,8 @@ import com.protonmail.jobforandroid.weather.widgets.NeomorphicInsetDrawable
 import com.squareup.picasso.Picasso
 import java.util.Locale
 
+private const val WEATHER_BACKGROUND_CROSSFADE_MS = 350L
+
 class CurrentWeatherFragment : Fragment() {
     private var _binding: FragmentCurrentWeatherBinding? = null
     private val binding get() = _binding!!
@@ -27,6 +32,12 @@ class CurrentWeatherFragment : Fragment() {
     private var currentIllustrationFile: String? = null
     private var latestWeatherImageUrl: String? = null
     private var latestConditionDescription: String = ""
+    private var activeBackgroundIndex = 0
+    private var displayedBackgroundResId: Int? = null
+    private var pendingBackgroundResId: Int? = null
+    private var pendingBackgroundIndex: Int? = null
+    private var backgroundRequestGeneration = 0
+    private var backgroundAnimator: ViewPropertyAnimator? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCurrentWeatherBinding.inflate(inflater, container, false)
@@ -42,6 +53,23 @@ class CurrentWeatherFragment : Fragment() {
         binding.searchCityInput.background = NeomorphicInsetDrawable(requireContext())
         configureIllustrationWebView(binding.weatherIllustration)
         model.liveDataToday.observe(viewLifecycleOwner) { weather ->
+            if (weather == null) {
+                binding.tvCity.text = ""
+                binding.tvData.text = ""
+                binding.tvCurrentTemp.text = getString(R.string.weather_metric_missing)
+                binding.tvCondition.text = ""
+                binding.tvSunrise.text = ""
+                binding.tvSunset.text = ""
+                binding.tvMaxMin.text = getString(R.string.weather_metric_missing)
+                latestConditionDescription = ""
+                latestWeatherImageUrl = null
+                currentIllustrationFile = null
+                binding.weatherIllustration.stopLoading()
+                binding.weatherIllustration.visibility = View.GONE
+                binding.imWeather.setImageResource(R.drawable.ic_weather_unknown)
+                binding.imWeather.visibility = View.VISIBLE
+                return@observe
+            }
             binding.tvData.text = formatUpdateTime(weather.time)
             binding.tvCity.text = weather.city
             binding.tvCurrentTemp.text = WeatherPresentation.roundedTemperature(weather.currentTemp)
@@ -71,6 +99,10 @@ class CurrentWeatherFragment : Fragment() {
         }
         applyMissingMetrics()
         model.liveDataTodayMetrics.observe(viewLifecycleOwner) { metrics ->
+            if (metrics == null) {
+                applyMissingMetrics()
+                return@observe
+            }
             binding.tvFeelsLike.text = metrics.feelsLikeC?.let {
                 WeatherPresentation.roundedTemperature(it)?.let { rounded ->
                     getString(R.string.weather_feels_like, rounded)
@@ -93,18 +125,116 @@ class CurrentWeatherFragment : Fragment() {
         }
         model.liveDataWeatherIcon.observe(viewLifecycleOwner) { state ->
             renderWeatherIllustration(state)
+            renderWeatherBackground(state?.conditionCode)
         }
-        applyDefaultBackground()
-        model.liveDataWeatherBackdrop.observe(viewLifecycleOwner) { state ->
-            binding.root.background = GradientDrawable(
-                GradientDrawable.Orientation.TOP_BOTTOM,
-                intArrayOf(state.topColor, state.bottomColor)
-            )
+        model.weatherRequestStatus.observe(viewLifecycleOwner) { status ->
+            if (status != null) binding.tvData.text = status
         }
     }
-    private fun applyDefaultBackground() {
-        val color = requireContext().getColor(R.color.weather_background)
-        binding.root.setBackgroundColor(color)
+
+    private fun renderWeatherBackground(conditionCode: Int?) {
+        val resourceId = WeatherBackgroundResolver.resolve(conditionCode)
+        if (resourceId == pendingBackgroundResId) return
+        if (resourceId == displayedBackgroundResId) {
+            cancelPendingBackgroundTransition()
+            return
+        }
+
+        cancelPendingBackgroundTransition()
+        val hasDisplayedBackground = displayedBackgroundResId != null
+        val targetIndex = if (hasDisplayedBackground) 1 - activeBackgroundIndex else activeBackgroundIndex
+        val target = backgroundView(targetIndex)
+        val generation = ++backgroundRequestGeneration
+        pendingBackgroundResId = resourceId
+        pendingBackgroundIndex = targetIndex
+        target.alpha = if (hasDisplayedBackground) 0f else 1f
+        target.visibility = View.VISIBLE
+        binding.weatherBackgroundScrim.visibility = View.VISIBLE
+
+        Picasso.get()
+            .load(resourceId)
+            .fit()
+            .centerCrop()
+            .noFade()
+            .into(target, object : Callback {
+                override fun onSuccess() {
+                    if (_binding == null || generation != backgroundRequestGeneration) return
+                    if (!hasDisplayedBackground) {
+                        displayedBackgroundResId = resourceId
+                        pendingBackgroundResId = null
+                        pendingBackgroundIndex = null
+                        return
+                    }
+
+                    val current = backgroundView(activeBackgroundIndex)
+                    val animator = target.animate()
+                        .alpha(1f)
+                        .setDuration(WEATHER_BACKGROUND_CROSSFADE_MS)
+                        .setListener(object : AnimatorListenerAdapter() {
+                            override fun onAnimationEnd(animation: Animator) {
+                                if (_binding == null || generation != backgroundRequestGeneration) return
+                                current.visibility = View.GONE
+                                current.alpha = 1f
+                                target.alpha = 1f
+                                activeBackgroundIndex = targetIndex
+                                displayedBackgroundResId = resourceId
+                                pendingBackgroundResId = null
+                                pendingBackgroundIndex = null
+                                backgroundAnimator = null
+                                target.animate().setListener(null)
+                            }
+                        })
+                    backgroundAnimator = animator
+                    animator.start()
+                }
+
+                override fun onError(error: Exception?) {
+                    if (_binding == null || generation != backgroundRequestGeneration) return
+                    target.visibility = View.GONE
+                    target.alpha = 1f
+                    if (!hasDisplayedBackground) binding.weatherBackgroundScrim.visibility = View.GONE
+                    pendingBackgroundResId = null
+                    pendingBackgroundIndex = null
+                }
+            })
+    }
+
+    private fun cancelPendingBackgroundTransition() {
+        backgroundRequestGeneration++
+        backgroundAnimator?.setListener(null)
+        backgroundAnimator?.cancel()
+        backgroundAnimator = null
+        pendingBackgroundIndex?.let { index ->
+            val pendingView = backgroundView(index)
+            Picasso.get().cancelRequest(pendingView)
+            pendingView.animate().setListener(null).cancel()
+            if (index != activeBackgroundIndex || displayedBackgroundResId == null) {
+                pendingView.visibility = View.GONE
+                pendingView.alpha = 1f
+            }
+        }
+        pendingBackgroundResId = null
+        pendingBackgroundIndex = null
+    }
+
+    private fun backgroundView(index: Int): ImageView = if (index == 0) {
+        binding.weatherBackgroundPrimary
+    } else {
+        binding.weatherBackgroundSecondary
+    }
+
+    private fun releaseWeatherBackground() {
+        cancelPendingBackgroundTransition()
+        _binding?.let { views ->
+            Picasso.get().cancelRequest(views.weatherBackgroundPrimary)
+            Picasso.get().cancelRequest(views.weatherBackgroundSecondary)
+            views.weatherBackgroundPrimary.setImageDrawable(null)
+            views.weatherBackgroundSecondary.setImageDrawable(null)
+            views.weatherBackgroundPrimary.visibility = View.GONE
+            views.weatherBackgroundSecondary.visibility = View.GONE
+        }
+        displayedBackgroundResId = null
+        activeBackgroundIndex = 0
     }
 
     private fun applyMissingMetrics() {
@@ -224,6 +354,8 @@ class CurrentWeatherFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        releaseWeatherBackground()
+        _binding?.imWeather?.let(Picasso.get()::cancelRequest)
         _binding?.weatherIllustration?.apply {
             stopLoading()
             loadUrl("about:blank")
@@ -271,5 +403,28 @@ internal object WeatherIconResolver {
             1087, 1273, 1276 -> "thunder.svg"
             else -> null
         }
+    }
+}
+
+internal object WeatherBackgroundResolver {
+    fun resolve(conditionCode: Int?): Int = when (conditionCode) {
+        1000 -> R.drawable.weather_clear
+        1003 -> R.drawable.weather_partly_cloudy
+        1006, 1009 -> R.drawable.weather_overcast
+
+        // Visibility-reducing haze, smoke, smog, dust and fog use the closest available scene.
+        1012, 1015, 1018, 1021, 1024, 1027, 1030, 1033, 1036, 1039, 1042, 1045, 1048,
+        1135, 1147 -> R.drawable.weather_fog
+
+        // Sleet and ice pellets use the available snow scene.
+        1066, 1069, 1114, 1117, 1204, 1207, 1210, 1213, 1216, 1219, 1222, 1225,
+        1237, 1249, 1252, 1255, 1258, 1261, 1264 -> R.drawable.weather_snow
+
+        1087, 1273, 1276, 1279, 1282 -> R.drawable.weather_thunderstorm
+
+        1063, 1072, 1150, 1153, 1168, 1171, 1180, 1183, 1186, 1189, 1192, 1195,
+        1198, 1201, 1240, 1243, 1246 -> R.drawable.weather_rain
+
+        else -> R.drawable.weather_overcast
     }
 }

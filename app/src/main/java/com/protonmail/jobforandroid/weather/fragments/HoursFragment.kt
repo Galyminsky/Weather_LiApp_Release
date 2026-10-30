@@ -27,7 +27,13 @@ class HoursFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        adapter = HourlyForecastAdapter()
+        adapter = HourlyForecastAdapter(
+            initialSelectedEpoch = model.selectedHourlyEpoch,
+            selectionInitialized = model.hourlySelectionInitialized
+        ) { epoch ->
+            model.selectedHourlyEpoch = epoch
+            model.hourlySelectionInitialized = true
+        }
         binding.rcView.layoutManager = LinearLayoutManager(requireContext())
         binding.rcView.itemAnimator = null
         binding.rcView.adapter = adapter
