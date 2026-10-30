@@ -109,8 +109,11 @@ object WeatherPresentation {
         return cityNames[lowerName] ?: cityName
     }
 
-    fun condition(text: String): String =
-        conditions[text.trim().lowercase(Locale.ROOT)] ?: "Погодные условия неизвестны"
+    fun condition(text: String): String {
+        val trimmed = text.trim()
+        if (trimmed.isBlank()) return "Погодные условия неизвестны"
+        return conditions[trimmed.lowercase(Locale.ROOT)] ?: trimmed
+    }
 
     fun roundedTemperature(value: String?): String? {
         val text = value?.trim()?.takeIf(String::isNotEmpty) ?: return null
