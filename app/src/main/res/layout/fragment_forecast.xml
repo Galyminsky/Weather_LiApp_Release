@@ -64,7 +64,7 @@
             app:tabIndicatorColor="?attr/colorPrimary"
             app:tabIndicatorFullWidth="false"
             app:tabMode="fixed"
-            app:tabSelectedTextColor="?attr/colorPrimary"
+            app:tabSelectedTextColor="?attr/colorOnSurface"
             app:tabTextColor="?attr/colorOnSurfaceVariant" />
     </com.protonmail.jobforandroid.weather.widgets.NeomorphicCardView>
 

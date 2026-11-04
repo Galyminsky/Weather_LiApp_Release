@@ -63,6 +63,7 @@ class MainFragment : Fragment(), MainScreenActions {
     private val model: MainViewModel by activityViewModels()
 
     private var activeRequestId: Long = 0L
+    private var pendingSearchRollback: SearchRollback? = null
 
     private val pLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { grants ->
         val granted = grants[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
@@ -115,8 +116,9 @@ class MainFragment : Fragment(), MainScreenActions {
             override fun onClick(name: String?) {
                 val query = name?.trim().orEmpty()
                 if (query.isNotEmpty()) {
+                    val rollback = pendingSearchRollback ?: SearchRollback(model.userSelectedCity)
                     model.userSelectedCity = query
-                    requestWeatherData(query)
+                    requestWeatherData(query, rollback = rollback)
                 }
             }
         })
@@ -213,13 +215,17 @@ class MainFragment : Fragment(), MainScreenActions {
         )
     }
 
-    private fun requestWeatherData(city: String, displayCity: String = city) {
+    private fun requestWeatherData(
+        city: String,
+        displayCity: String = city,
+        rollback: SearchRollback? = null
+    ) {
         weatherRequest?.cancel()
         val currentRequestId = ++activeRequestId
         val queryCity = city.trim()
         model.failedWeatherQuery = null
         inFlightWeatherQuery = queryCity
-        clearWeatherData()
+        pendingSearchRollback = rollback
         model.weatherRequestStatus.value = getString(R.string.weather_loading_city, displayCity)
         val url = Uri.parse("https://api.weatherapi.com/v1/forecast.json")
             .buildUpon()
@@ -241,13 +247,11 @@ class MainFragment : Fragment(), MainScreenActions {
                 if (currentRequestId == activeRequestId && isAdded) {
                     try {
                         parseWeatherData(result, queryCity)
+                        pendingSearchRollback = null
                         model.weatherRequestStatus.value = null
                     } catch (error: Exception) {
                         Log.e("Weather", "Unable to parse weather response (type=${error.javaClass.simpleName})")
-                        model.failedWeatherQuery = queryCity
-                        clearWeatherData()
-                        model.weatherRequestStatus.value = getString(R.string.weather_city_load_failed, displayCity)
-                        showError(R.string.error_weather_parse)
+                        handleWeatherLoadFailure(queryCity, displayCity, R.string.error_weather_parse)
                     }
                 }
             },
@@ -259,10 +263,7 @@ class MainFragment : Fragment(), MainScreenActions {
                 if (currentRequestId == activeRequestId && isAdded) {
                     val statusCode = error.networkResponse?.statusCode
                     Log.e("Weather", "Weather request failed (status=${statusCode ?: "unknown"}, type=${error.javaClass.simpleName})")
-                    model.failedWeatherQuery = queryCity
-                    clearWeatherData()
-                    model.weatherRequestStatus.value = getString(R.string.weather_city_load_failed, displayCity)
-                    showError(R.string.error_weather_load)
+                    handleWeatherLoadFailure(queryCity, displayCity, R.string.error_weather_load)
                 }
             }
         ) {
@@ -279,13 +280,18 @@ class MainFragment : Fragment(), MainScreenActions {
         requestQueue.add(request)
     }
 
-    private fun clearWeatherData() {
-        model.liveDataToday.value = null
-        model.liveDataCurrent.value = null
-        model.liveDataList.value = emptyList()
-        model.liveDataTodayMetrics.value = null
-        model.liveDataWeatherIcon.value = null
-        model.liveDataWeatherBackdrop.value = null
+    private fun handleWeatherLoadFailure(queryCity: String, displayCity: String, messageRes: Int) {
+        model.failedWeatherQuery = queryCity
+        pendingSearchRollback?.let { rollback ->
+            model.userSelectedCity = rollback.previousCity
+            pendingSearchRollback = null
+        }
+        model.weatherRequestStatus.value = if (model.liveDataToday.value == null) {
+            getString(R.string.weather_city_load_failed, displayCity)
+        } else {
+            null
+        }
+        showError(messageRes)
     }
 
     private fun showError(messageRes: Int) {
@@ -296,8 +302,15 @@ class MainFragment : Fragment(), MainScreenActions {
         val mainObject = JSONObject(result)
         val list = parseDays(mainObject, queryCity)
         if (list.isEmpty()) throw IllegalStateException("Forecast response contains no days")
-        parseCurrentData(mainObject, list[0], queryCity)
-        updateWeatherBackground(mainObject)
+        val current = parseCurrentData(mainObject, list[0], queryCity)
+        val backdrop = updateWeatherBackground(mainObject)
+
+        model.liveDataList.value = list
+        model.liveDataToday.value = current.today
+        model.liveDataCurrent.value = current.today
+        model.liveDataTodayMetrics.value = current.metrics
+        model.liveDataWeatherIcon.value = current.icon
+        backdrop?.let { model.liveDataWeatherBackdrop.value = it }
         model.loadedWeatherQuery = queryCity
     }
 
@@ -326,12 +339,15 @@ class MainFragment : Fragment(), MainScreenActions {
             )
             list.add(item)
         }
-        model.liveDataList.value = list
         return list
     }
 
 
-    private fun parseCurrentData(mainObject: JSONObject, weatherItem: WeatherModel, queryCity: String) {
+    private fun parseCurrentData(
+        mainObject: JSONObject,
+        weatherItem: WeatherModel,
+        queryCity: String
+    ): ParsedCurrentWeather {
         val rawName = mainObject.getJSONObject("location").getString("name")
         val name = WeatherPresentation.localizedCityName(rawName, queryCity)
         val item = WeatherModel(
@@ -348,8 +364,6 @@ class MainFragment : Fragment(), MainScreenActions {
             weatherItem.sunrise,
             weatherItem.sunset,
         )
-        model.liveDataToday.value = item
-        model.liveDataCurrent.value = item
 
         val current = mainObject.optJSONObject("current")
         val day = mainObject.optJSONObject("forecast")
@@ -359,7 +373,7 @@ class MainFragment : Fragment(), MainScreenActions {
         val rainChance = day?.optString("daily_chance_of_rain")?.toMetricNumber()
         val snowChance = day?.optString("daily_chance_of_snow")?.toMetricNumber()
         val precipitationChance = listOfNotNull(rainChance, snowChance).maxOrNull()
-        model.liveDataTodayMetrics.value = TodayWeatherMetrics(
+        val metrics = TodayWeatherMetrics(
             feelsLikeC = current?.optString("feelslike_c")?.toMetricNumber(),
             windSpeedKph = current?.optString("wind_kph")?.toMetricNumber(),
             windDirection = current?.optString("wind_dir")?.takeIf { it.isNotBlank() && it != "null" },
@@ -376,7 +390,7 @@ class MainFragment : Fragment(), MainScreenActions {
                 else -> null
             }
         }
-        model.liveDataWeatherIcon.value = WeatherIconState(conditionCode, isDay)
+        return ParsedCurrentWeather(item, metrics, WeatherIconState(conditionCode, isDay))
     }
 
     private fun String?.toMetricNumber(): String? {
@@ -384,8 +398,8 @@ class MainFragment : Fragment(), MainScreenActions {
         return if (value % 1.0 == 0.0) value.toInt().toString() else value.toString().trimEnd('0').trimEnd('.')
     }
 
-    private fun updateWeatherBackground(response: JSONObject) {
-        val context = context ?: return
+    private fun updateWeatherBackground(response: JSONObject): WeatherBackdropState? {
+        val context = context ?: return null
         val current = response.optJSONObject("current")
         val conditionCode = current
             ?.optJSONObject("condition")
@@ -407,8 +421,7 @@ class MainFragment : Fragment(), MainScreenActions {
 
         if (tintResource == null) {
             val baseColor = context.getColor(R.color.weather_background)
-            model.liveDataWeatherBackdrop.value = WeatherBackdropState(baseColor, baseColor)
-            return
+            return WeatherBackdropState(baseColor, baseColor)
         }
 
         val location = response.optJSONObject("location")
@@ -440,7 +453,7 @@ class MainFragment : Fragment(), MainScreenActions {
         val secondaryColor = context.getColor(R.color.weather_accent_secondary)
         val topColor = ColorUtils.blendARGB(baseColor, tintColor, tintAlpha)
         val bottomColor = ColorUtils.blendARGB(baseColor, secondaryColor, tintAlpha * 0.4f)
-        model.liveDataWeatherBackdrop.value = WeatherBackdropState(topColor, bottomColor)
+        return WeatherBackdropState(topColor, bottomColor)
     }
 
     private fun parseLocationTime(location: JSONObject?): LocalTime? {
@@ -495,6 +508,14 @@ class MainFragment : Fragment(), MainScreenActions {
         else -> DayPhase.NIGHT
     }
 
+    private class SearchRollback(val previousCity: String?)
+
+    private class ParsedCurrentWeather(
+        val today: WeatherModel,
+        val metrics: TodayWeatherMetrics,
+        val icon: WeatherIconState
+    )
+
     private enum class DayPhase {
         MORNING,
         DAY,
@@ -520,6 +541,7 @@ class MainFragment : Fragment(), MainScreenActions {
         weatherRequest?.cancel()
         weatherRequest = null
         inFlightWeatherQuery = null
+        pendingSearchRollback = null
         model.weatherRequestStatus.value = null
         locationCancellation?.cancel()
         locationCancellation = null

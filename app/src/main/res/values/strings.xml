@@ -58,4 +58,5 @@
     <string name="weather_wind_speed_label">&#1057;&#1082;&#1086;&#1088;&#1086;&#1089;&#1090;&#1100; &#1074;&#1077;&#1090;&#1088;&#1072;</string>
     <string name="weather_today">&#1057;&#1077;&#1075;&#1086;&#1076;&#1085;&#1103;</string>
     <string name="weather_tomorrow">&#1047;&#1072;&#1074;&#1090;&#1088;&#1072;</string>
+    <string name="weather_source_attribution">&#1044;&#1072;&#1085;&#1085;&#1099;&#1077; &#1086; &#1087;&#1086;&#1075;&#1086;&#1076;&#1077;: WeatherAPI.com</string>
 </resources>

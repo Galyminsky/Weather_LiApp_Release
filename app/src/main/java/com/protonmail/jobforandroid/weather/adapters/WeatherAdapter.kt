@@ -7,6 +7,7 @@ import android.util.LruCache
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.core.content.ContextCompat
 import com.protonmail.jobforandroid.weather.R
 import com.protonmail.jobforandroid.weather.databinding.ListItemBinding
 import com.protonmail.jobforandroid.weather.model.WeatherModel
@@ -19,6 +20,17 @@ class WeatherAdapter(private val listener: Listener?) :
     ListAdapter<WeatherModel, WeatherAdapter.Holder>(Comparator()) {
 
     private val metricsCache = LruCache<String, DailyMetrics>(8)
+    private var selectedDay: Pair<String, String>? = null
+
+    fun selectDay(item: WeatherModel) {
+        val next = item.city to item.time
+        if (selectedDay == next) return
+        val previous = currentList.indexOfFirst { (it.city to it.time) == selectedDay }
+        selectedDay = next
+        if (previous >= 0) notifyItemChanged(previous)
+        val selected = currentList.indexOfFirst { (it.city to it.time) == next }
+        if (selected >= 0) notifyItemChanged(selected)
+    }
 
     private fun metricsFor(hoursJson: String): DailyMetrics = metricsCache.get(hoursJson)
         ?: calculateMetrics(hoursJson).also { metricsCache.put(hoursJson, it) }
@@ -65,6 +77,9 @@ class WeatherAdapter(private val listener: Listener?) :
         fun bind(item: WeatherModel) = with(binding) {
             itemTemp = item
             val context = itemView.context
+            val isSelected = selectedDay == (item.city to item.time)
+            itemView.isSelected = isSelected
+            itemView.foreground = if (isSelected) ContextCompat.getDrawable(context, R.drawable.weather_selected_day_outline) else null
             tvDate.text = WeatherPresentation.forecastDate(item.time, hourly = item.currentTemp.isNotBlank())
             tvCondition.text = WeatherPresentation.condition(item.condition)
             val missing = context.getString(R.string.weather_metric_missing)

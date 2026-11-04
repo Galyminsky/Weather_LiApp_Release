@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
+    style="@style/Widget.Weather.Card.Forecast"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="2dp"
@@ -11,9 +12,6 @@
     android:foreground="?attr/selectableItemBackground"
     app:cardCornerRadius="22dp"
     app:cardElevation="0dp"
-    app:neomorphicInset="4dp"
-    app:neomorphicBlur="3dp"
-    app:neomorphicOffset="1dp"
     app:strokeColor="@android:color/transparent"
     app:strokeWidth="0dp">
 
@@ -193,6 +191,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical"
+                        android:paddingStart="0dp"
                         android:paddingEnd="8dp">
 
                         <LinearLayout
@@ -234,7 +233,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical"
-                        android:paddingStart="8dp">
+                        android:paddingStart="8dp"
+                        android:paddingEnd="0dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -282,6 +282,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical"
+                        android:paddingStart="0dp"
                         android:paddingEnd="8dp">
 
                         <LinearLayout
@@ -323,7 +324,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical"
-                        android:paddingStart="8dp">
+                        android:paddingStart="8dp"
+                        android:paddingEnd="0dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"

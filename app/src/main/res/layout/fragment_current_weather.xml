@@ -123,8 +123,6 @@
                     app:iconPadding="0dp"
                     app:strokeColor="@color/weather_accent_secondary"
                     app:strokeWidth="1.5dp"
-                    android:outlineAmbientShadowColor="@color/weather_accent_secondary"
-                    android:outlineSpotShadowColor="@color/weather_accent_secondary"
                     android:text="" />
             </LinearLayout>
 
@@ -232,7 +230,6 @@
             <com.protonmail.jobforandroid.weather.widgets.NeomorphicCardView
                 android:id="@+id/cardTodayTemperatureDetails"
                 style="@style/Widget.Weather.Card.Forecast"
-                app:neomorphicFaceOpacity="0.25"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/weather_space_2"
@@ -295,7 +292,6 @@
                 <com.protonmail.jobforandroid.weather.widgets.NeomorphicCardView
                     android:id="@+id/cardWind"
                     style="@style/Widget.Weather.Card.Forecast"
-                    app:neomorphicFaceOpacity="0.25"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/weather_space_1"
@@ -356,7 +352,6 @@
                 <com.protonmail.jobforandroid.weather.widgets.NeomorphicCardView
                     android:id="@+id/cardHumidity"
                     style="@style/Widget.Weather.Card.Forecast"
-                    app:neomorphicFaceOpacity="0.25"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginStart="@dimen/weather_space_1"
@@ -416,7 +411,6 @@
                 <com.protonmail.jobforandroid.weather.widgets.NeomorphicCardView
                     android:id="@+id/cardPrecipitation"
                     style="@style/Widget.Weather.Card.Forecast"
-                    app:neomorphicFaceOpacity="0.25"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/weather_space_1"
@@ -467,7 +461,6 @@
                 <com.protonmail.jobforandroid.weather.widgets.NeomorphicCardView
                     android:id="@+id/cardPressure"
                     style="@style/Widget.Weather.Card.Forecast"
-                    app:neomorphicFaceOpacity="0.25"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginStart="@dimen/weather_space_1"
@@ -519,7 +512,6 @@
             <com.protonmail.jobforandroid.weather.widgets.NeomorphicCardView
                 android:id="@+id/linearLayout"
                 style="@style/Widget.Weather.Card.Forecast"
-                app:neomorphicFaceOpacity="0.25"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/weather_space_3"
@@ -628,6 +620,14 @@
                     </LinearLayout>
                 </LinearLayout>
             </com.protonmail.jobforandroid.weather.widgets.NeomorphicCardView>
+            <TextView
+                android:id="@+id/weatherSourceAttribution"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/weather_space_3"
+                android:gravity="center"
+                android:text="@string/weather_source_attribution"
+                android:textAppearance="@style/TextAppearance.Weather.Caption" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
