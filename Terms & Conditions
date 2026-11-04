@@ -1,0 +1,53 @@
+Terms & Conditions — Weather LiApp
+
+Effective date: November 4, 2026  
+
+Developer: Galyaminsky Yuriy  
+
+Contact: jobforandroid@proton.me
+
+These Terms & Conditions apply to your use of Weather LiApp, a free Android weather application (package `com.protonmail.jobforandroid.weather`). By using the app, you agree to these terms, subject to applicable law.
+
+1. What the app provides
+
+Weather LiApp displays current weather, hourly and multi-day forecasts, and related weather graphics. You may obtain a forecast using an optional device-location permission or by searching for a city manually. The app depends on internet access and third-party weather services; availability and coverage may vary.
+
+2. Weather data and important safety notice
+
+Weather forecasts are estimates and may be incomplete, delayed, or inaccurate for your exact location and time. Weather information is for general information only and must not be the sole basis for decisions involving personal safety, aviation, maritime navigation, emergency planning, or other safety-critical activity. For such decisions, consult official meteorological services and the relevant authorities.
+Weather data provided by WeatherAPI.com: https://www.weatherapi.com/
+
+3. Permissions and privacy
+
+Location permission is optional and only needed for location-based weather. You can instead search for a city. The app uses Firebase Analytics for usage statistics. Data handling is explained in the Privacy Policy: https://github.com/Galyminsky/Weather-LiApp-APP/blob/main/Privacy%20Policy
+Third-party services operate under their own terms and policies, including:
+Google services: https://policies.google.com/terms
+WeatherAPI.com: https://www.weatherapi.com/terms
+
+4. Connectivity and charges
+
+A network connection is required to request new forecast data. Your internet or mobile provider may charge for network use, including roaming. Temporary interruptions, unavailable location services, API quotas, or third-party outages can affect the app.
+
+5. Acceptable use and intellectual property
+
+You may use the app for lawful personal purposes. You must not interfere with the service, misuse provider resources, or circumvent lawful access restrictions. The source code and third-party materials are governed by their respective licenses and rights; these Terms do not override rights granted by applicable open-source licenses.
+
+6. Changes and availability
+
+The developer may fix bugs, change features, update supported Android versions, or discontinue distribution. Availability of forecasts depends in part on external providers. The app is currently provided free of charge; any future paid functionality would require separate, clear disclosure before purchase.
+
+7. Limitation of liability
+
+To the extent permitted by applicable law, the app and its forecasts are provided without a guarantee of continuous availability or meteorological accuracy. Nothing in these Terms excludes rights or remedies that cannot legally be excluded.
+
+8. Changes to these terms
+
+These Terms may be updated to reflect changes in the app, third-party services, or applicable requirements. Updated terms will be published in the official repository.
+
+9. Contact
+
+Galyaminsky Yuriy  
+
+jobforandroid@proton.me  
+
+Official policy repository: https://github.com/Galyminsky/Weather-LiApp-APP

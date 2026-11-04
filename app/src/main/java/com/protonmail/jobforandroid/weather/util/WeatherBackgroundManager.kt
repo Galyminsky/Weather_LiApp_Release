@@ -2,10 +2,15 @@ package com.protonmail.jobforandroid.weather.util
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.graphics.Bitmap
+import android.graphics.RenderEffect
+import android.graphics.Shader
+import android.os.Build
 import android.view.View
 import android.widget.ImageView
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
+import com.squareup.picasso.Transformation
 import com.protonmail.jobforandroid.weather.R
 import com.protonmail.jobforandroid.weather.model.WeatherIconState
 
@@ -23,6 +28,20 @@ class WeatherBackgroundManager(
 
     companion object {
         private const val WEATHER_BACKGROUND_CROSSFADE_MS = 450L
+        // 50% on the chosen 0–25 px visual blur scale.
+        private const val WEATHER_BACKGROUND_BLUR_RADIUS = 12.5f
+    }
+
+    init {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val blur = RenderEffect.createBlurEffect(
+                WEATHER_BACKGROUND_BLUR_RADIUS,
+                WEATHER_BACKGROUND_BLUR_RADIUS,
+                Shader.TileMode.CLAMP
+            )
+            primaryView.setRenderEffect(blur)
+            secondaryView.setRenderEffect(blur)
+        }
     }
 
     fun applyBackground(state: WeatherIconState?) {
@@ -44,6 +63,9 @@ class WeatherBackgroundManager(
             .load(resourceId)
             .fit()
             .centerCrop()
+            .apply {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) transform(LegacyBackgroundBlur)
+            }
             .noFade()
             .into(target, object : Callback {
                 override fun onSuccess() {
@@ -119,6 +141,24 @@ class WeatherBackgroundManager(
         displayedBackgroundResId = null
         activeBackgroundIndex = 0
     }
+}
+
+/** Softens background bitmaps on Android 10 and 11, where RenderEffect is unavailable. */
+private object LegacyBackgroundBlur : Transformation {
+    override fun transform(source: Bitmap): Bitmap {
+        val small = Bitmap.createScaledBitmap(
+            source,
+            maxOf(1, source.width / 16),
+            maxOf(1, source.height / 16),
+            true
+        )
+        val blurred = Bitmap.createScaledBitmap(small, source.width, source.height, true)
+        if (small !== source && small !== blurred) small.recycle()
+        if (blurred !== source) source.recycle()
+        return blurred
+    }
+
+    override fun key(): String = "weather-background-blur-50"
 }
 
 object WeatherBackgroundResolver {

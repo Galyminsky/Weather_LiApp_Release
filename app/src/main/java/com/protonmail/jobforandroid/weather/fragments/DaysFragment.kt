@@ -49,6 +49,7 @@ class DaysFragment : Fragment(), WeatherAdapter.Listener {
     }
 
     override fun onClick(item: WeatherModel) {
+        adapter.selectDay(item)
         model.liveDataCurrent.value = item
     }
 

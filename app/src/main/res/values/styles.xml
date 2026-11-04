@@ -51,33 +51,27 @@
 
     <style name="Widget.Weather.Card" parent="">
         <item name="cardElevation">0dp</item>
-        <item name="cardBackgroundColor">@android:color/transparent</item>
+        <item name="cardBackgroundColor">@color/weather_card_fill</item>
         <item name="strokeColor">@android:color/transparent</item>
         <item name="strokeWidth">0dp</item>
     </style>
 
     <style name="Widget.Weather.Card.Forecast" parent="Widget.Weather.Card">
         <item name="cardCornerRadius">@dimen/weather_radius_card</item>
-        <item name="neomorphicInset">4dp</item>
-        <item name="neomorphicBlur">3dp</item>
-        <item name="neomorphicOffset">1dp</item>
-        <item name="neomorphicFaceOpacity">0.25</item>
     </style>
 
     <style name="Widget.Weather.Button.Filled" parent="Widget.Material3.Button">
         <item name="android:minHeight">@dimen/weather_touch_target_min</item>
         <item name="shapeAppearanceOverlay">@style/ShapeAppearance.Weather.Control</item>
-        <item name="android:elevation">4dp</item>
-        <item name="android:outlineAmbientShadowColor">@color/weather_shadow_light</item>
-        <item name="android:outlineSpotShadowColor">@color/weather_shadow_dark</item>
+        <item name="android:elevation">0dp</item>
+        <item name="backgroundTint">@color/weather_card_fill</item>
     </style>
 
     <style name="Widget.Weather.Button.Tonal" parent="Widget.Material3.Button.TonalButton">
         <item name="android:minHeight">@dimen/weather_touch_target_min</item>
         <item name="shapeAppearanceOverlay">@style/ShapeAppearance.Weather.Control</item>
-        <item name="android:elevation">4dp</item>
-        <item name="android:outlineAmbientShadowColor">@color/weather_shadow_light</item>
-        <item name="android:outlineSpotShadowColor">@color/weather_shadow_dark</item>
+        <item name="android:elevation">0dp</item>
+        <item name="backgroundTint">@color/weather_card_fill</item>
     </style>
 
     <style name="Widget.Weather.TabLayout" parent="Widget.Material3.TabLayout">

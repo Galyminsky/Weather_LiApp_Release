@@ -1,0 +1,60 @@
+Privacy Policy — Weather LiApp
+
+Effective date: November 4, 2026  
+
+Developer: Galyaminsky Yuriy  
+
+Contact: jobforandroid@proton.me
+
+Weather LiApp (package `com.protonmail.jobforandroid.weather`) is a free Android weather application. This Privacy Policy describes how information is accessed, transmitted, and processed when you use the app.
+
+1. Information used to provide weather forecasts
+
+Location (optional). With your permission, Weather LiApp can access your device's approximate or precise location while you use the app to obtain local weather forecasts. Coordinates may be sent to WeatherAPI.com to retrieve the requested weather data. The app does not request background location access. You can deny or revoke location permission in Android settings and search for a city manually instead.
+City searches. If you enter a city or place name, the query is sent to WeatherAPI.com to obtain weather conditions and forecasts. Network requests may also disclose technical information, such as your IP address, to the receiving service.
+Weather and interface state. Weather results and certain screen-state values may be kept temporarily in app memory or Android saved state so the interface can function and recover. The audited version does not provide user accounts or a developer-operated database of saved user profiles.
+
+2. Firebase Analytics
+
+Weather LiApp uses Google Firebase Analytics to understand aggregate app usage and improve reliability and usability. Depending on device settings and SDK configuration, Google Analytics for Firebase may automatically process app interaction and session events, app launches and updates, device and operating-system information, approximate geographic information, app-instance identifiers, and Android Advertising ID when available.
+Analytics data is processed by Google under its applicable terms and privacy practices. The presence of the Advertising ID does not mean Weather LiApp displays advertisements. The audited version does not include AdMob advertising functionality.
+
+3. Third-party service providers
+
+WeatherAPI.com — receives location coordinates or submitted place names as needed to deliver forecasts. Privacy policy: https://www.weatherapi.com/privacy
+Google Play services / Google Location Services — helps the app access device location when permission is granted. Privacy policy: https://policies.google.com/privacy
+Google Firebase Analytics — processes usage and device-related analytics. Privacy information: https://firebase.google.com/support/privacy and https://policies.google.com/privacy
+These providers may process information in countries other than your own, subject to their applicable policies and safeguards.
+
+4. Purpose and legal handling of information
+
+Information is used to show current conditions and forecasts, respond to your searches, provide optional location-based weather, maintain app functionality, and understand usage through analytics. Weather LiApp does not require registration, request payment information, or sell personal data. No user information is intentionally provided to third parties for the developer's own direct-marketing campaigns.
+
+5. Security
+
+Weather API requests are made over HTTPS. Access to device location is controlled by Android permissions. No internet transmission or electronic storage system can be guaranteed completely secure.
+
+6. Retention and deletion
+
+The app does not maintain a developer-operated account database. Temporary weather and interface data are managed through the app and Android lifecycle and can generally be cleared by clearing the app's data or uninstalling it.
+Google and WeatherAPI.com determine retention periods for data they process under their respective policies and settings. For privacy questions or requests relating to information under the developer's control, email jobforandroid@proton.me. For data processed independently by third-party providers, their privacy controls and request mechanisms may also apply.
+
+7. Your choices
+
+You can use manual city search without granting location permission, revoke location access at any time in Android settings, clear the app's local data, or uninstall the app. Your device's privacy and advertising settings may affect the identifiers available to analytics services.
+
+8. Children's privacy
+
+Weather LiApp is a general-purpose weather application and is not specifically designed for children under 13. It does not offer child accounts. If you believe a child's personal information has been processed improperly, please contact the developer at the address above.
+
+9. Changes to this policy
+
+This policy may be updated when app functionality, third-party services, or applicable requirements change. The updated version will be published at the official policy repository.
+
+10. Contact
+
+Galyaminsky Yuriy  
+
+jobforandroid@proton.me  
+
+Official policy repository: https://github.com/Galyminsky/Weather-LiApp-APP
